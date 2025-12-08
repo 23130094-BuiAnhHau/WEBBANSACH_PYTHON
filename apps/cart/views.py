@@ -6,7 +6,7 @@ from apps.book.models import Book
 @login_required
 def cart_detail(request):
     cart, _ = Cart.objects.get_or_create(user=request.user)
-    return render(request, "cart/cart_detail.html", {"cart": cart})
+    return render(request, "templates/cart_detail.html", {"cart": cart})
 
 
 @login_required

@@ -61,10 +61,10 @@ def checkout(request):
 
         return redirect("order_history")
 
-    return render(request, "order/checkout.html", {"cart": cart})
+    return render(request, "templates/checkout.html", {"cart": cart})
 
 # --- Lịch sử đơn hàng ---
 @login_required
 def order_history(request):
     orders = Order.objects.filter(user=request.user).order_by("-created_at")
-    return render(request, "order/order_history.html", {"orders": orders})
+    return render(request, "templates/order_history.html", {"orders": orders})
