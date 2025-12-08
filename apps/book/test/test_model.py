@@ -1,16 +1,18 @@
-from django.test import TestCase
+from django.test import Client, TestCase
 from apps.book.models import Book, Category
 from apps.user.models import User
 
 
 class BookModelTest(TestCase):
     def setUp(self):
-        self.category = Category.objects.create(name="Khoa học")
+        self.client = Client()
+        self.category = Category.objects.create(name="Test Cate")  
         self.book = Book.objects.create(
-            title="Vũ trụ",
-            price=75000,
-            author="Stephen Hawking",
-            category=self.category
+            title="Book A",
+            author="Author",
+            price=50000,
+            stock=10,
+            category=self.category     
         )
 
     def test_category_to_string(self):
