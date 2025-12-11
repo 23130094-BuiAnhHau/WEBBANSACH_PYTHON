@@ -60,6 +60,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'BookStore.urls'
 
+#------------------------------------------------------
+# Thêm dòng này để Django biết trang login của bạn ở đâu
+LOGIN_URL = 'login'
+
+# TẠM THỜI THÊM ĐOẠN NÀY ĐỂ DEBUG TEMPLATES
+print("--- DEBUG TEMPLATES PATH ---")
+print("BASE_DIR:", BASE_DIR)
+# In ra đường dẫn đầy đủ mà Django đang tìm kiếm
+print("Full Templates Path:", BASE_DIR / "templates")
+print("----------------------------")
+#-------------------------------------------------------------------------
+
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

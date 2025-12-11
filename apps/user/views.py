@@ -4,6 +4,7 @@ from django.contrib import messages
 from apps.user.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+from django.http import HttpResponse        #thêm để login 
 # --- Đăng ký ---
 def register_view(request):
     if request.method == "POST":
@@ -18,7 +19,25 @@ def register_view(request):
     return render(request, "templates/register.html")
 
 # --- Đăng nhập ---
+# def login_view(request):
+#     if request.method == "POST":
+#         username = request.POST.get("username")
+#         password = request.POST.get("password")
+#         user = authenticate(request, username=username, password=password)
+#         if user:
+#             login(request, user)
+#             return redirect("home")
+#         else:
+#             messages.error(request, "Sai thông tin đăng nhập!")
+#     return render(request, "user/login.html")
+
+
 def login_view(request):
+    # Đây là nơi bạn sẽ render form login của mình sau này
+    # Tạm thời trả về một trang đơn giản không cần template
+    
+    return HttpResponse("<h1>Trang Đăng Nhập Tạm Thời Đã Chạy</h1>")
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")

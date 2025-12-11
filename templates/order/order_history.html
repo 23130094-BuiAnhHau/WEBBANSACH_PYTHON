@@ -1,0 +1,104 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử đơn hàng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'order/order_history.css' %}">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- BÊN TRÁI: THÔNG TIN KHÁCH HÀNG -->
+    <div class="customer-info">
+        <h2>Thông tin khách hàng</h2>
+
+        <div class="info-row">
+            <span>Họ tên:</span>
+            <b>Nguyễn Văn A</b>
+        </div>
+
+        <div class="info-row">
+            <span>Số điện thoại:</span>
+            <b>0123 456 789</b>
+        </div>
+
+        <div class="info-row">
+            <span>Email:</span>
+            <b>nguyenvana@gmail.com</b>
+        </div>
+
+        <div class="info-row">
+            <span>Địa chỉ nhận hàng:</span>
+            <b>123 Lý Thường Kiệt, Q.10, TP.HCM</b>
+        </div>
+    </div>
+
+
+    <!-- BÊN PHẢI: DANH SÁCH ĐƠN HÀNG -->
+    <div class="order-list">
+        <h2>Danh sách đơn hàng</h2>
+
+        <!-- 1 ĐƠN -->
+        <div class="order-item">
+            <div class="order-top">
+                <span>Mã đơn: <b>DH001</b></span>
+                <span class="status processing">Đang xử lý</span>
+            </div>
+
+            <div class="order-body">
+                <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg">
+                <div class="order-detail">
+                    <p>Sách: 101 Từ Đầu Tiên Cho Bé</p>
+                    <p>Số lượng: 1</p>
+                    <p>Ngày đặt: 02/12/2025</p>
+                </div>
+                <div class="order-price">48,000đ</div>
+            </div>
+        </div>
+
+        <!-- 2 ĐƠN -->
+        <div class="order-item">
+            <div class="order-top">
+                <span>Mã đơn: <b>DH002</b></span>
+                <span class="status shipping">Đang giao</span>
+            </div>
+
+            <div class="order-body">
+                <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg">
+                <div class="order-detail">
+                    <p>Sách Học Tiếng Anh</p>
+                    <p>Số lượng: 2</p>
+                    <p>Ngày đặt: 01/12/2025</p>
+                </div>
+                <div class="order-price">120,000đ</div>
+            </div>
+        </div>
+
+        <!-- 3 ĐƠN -->
+        <div class="order-item">
+            <div class="order-top">
+                <span>Mã đơn: <b>DH003</b></span>
+                <span class="status done">Hoàn thành</span>
+            </div>
+
+            <div class="order-body">
+                <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg">
+                <div class="order-detail">
+                    <p>Sách Kỹ Năng Sống</p>
+                    <p>Số lượng: 1</p>
+                    <p>Ngày đặt: 29/11/2025</p>
+                </div>
+                <div class="order-price">65,000đ</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

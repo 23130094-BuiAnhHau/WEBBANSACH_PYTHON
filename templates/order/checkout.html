@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán</title>
+    <link rel="stylesheet" href="{% static 'order/checkout.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="checkout-container">
+
+    <div class="left">
+
+        <form method="POST" class="card" id="checkout-form">
+            {% csrf_token %}
+            <h2>Thông tin giao hàng</h2>
+
+            <input type="text" name="fullname" placeholder="Họ và tên" required>
+            <div class="phone-box">
+                <input type="text" name="phone" placeholder="Số điện thoại" required>
+                <span class="flag">🇻🇳</span>
+            </div>
+            <input type="email" name="email" placeholder="Nhập email (không bắt buộc)">
+            <input type="text" name="country" placeholder="Quốc gia">
+            
+            <input type="text" name="address" placeholder="Địa chỉ, tên đường" required>
+            <input type="text" name="city" placeholder="Tỉnh/TP, Quận/Huyện, Phường/Xã" >
+        </form>
+
+
+        <div class="card">
+            <h2>Phương thức giao hàng</h2>
+
+
+
+    <div id="ship-empty" class="ship-empty">
+        <input type="text" placeholder="Nhập địa chỉ để xem các phương thức giao hàng">
+    </div>
+</div>
+
+
+
+
+        <div class="card">
+            <h2>Phương thức thanh toán</h2>
+
+            <label class="pay-item active">
+                <div class="pay-left">
+                    <input type="radio" name="payment" form="checkout-form" value="cod" checked>
+                    <span>Thanh toán khi giao hàng (COD)</span>
+                </div>
+            </label>
+
+
+            <label class="pay-item">
+                <div class="pay-left">
+                    <input type="radio" name="payment" form="checkout-form" value="bank">
+                    <span>Chuyển khoản qua ngân hàng</span>
+                </div>
+            </label>
+
+            <label class="pay-item">
+                <div class="pay-left">
+                    <input type="radio" name="payment" form="checkout-form" value="qr">
+                    <span>Chuyển khoản qua QR - BIDV</span>
+                </div>
+            </label>
+        </div>
+
+        <div class="card">
+            <div class="invoice-header">
+                <h2>Hoá đơn điện tử</h2>
+                <span class="invoice-link">Yêu cầu xuất<i class="fa-solid fa-chevron-right"></i></span>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <input type="text" name="note" form="checkout-form" placeholder="Ghi chú đơn hàng">
+        </div>
+
+    </div>
+
+
+    <div class="right">
+
+        <div class="card">
+            <h2>Giỏ hàng</h2>
+
+            {% comment %} {% for item in cart.items.all %}
+            <div class="product">
+                <img src="{{ item.book.image.url }}" class="product-img">
+
+                <div class="product-right">
+                    <div class="product-title-row">
+                        <p class="product-title">
+                            Sách: {{ item.book.title }}
+                        </p>
+
+                        <button type="button" class="delete-btn">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="variant">
+                        <span class="va">Default Title<i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+
+                    <div class="product-bottom">
+                        <p class="price">{{ item.book.price|floatformat:0 }}₫</p>
+
+                        <div class="qty-box">
+                            <button type="button" class="qty-btn">−</button>
+                            <span class="qty-number">{{ item.quantity }}</span>
+                            <button type="button" class="qty-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>Giỏ hàng trống.</p>
+            {% endfor %}
+
+        </div> {% endcomment %}
+            <div class="product">
+                <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg" class="product-img">
+
+                <div class="product-right">
+                    <div class="product-title-row">
+                        <p class="product-title">
+                            Sách: 101 Từ Đầu Tiên Cho Bé - Động Vật (Tái Bản)
+                        </p>
+
+                        <button class="delete-btn">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="variant">
+                    <span class="va">Default Title<i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+
+                    <div class="product-bottom">
+                        <p class="price">48,000đ</p>
+
+                        <div class="qty-box">
+                            <button class="qty-btn">−</button>
+                            <span class="qty-number">1</span>
+                            <button class="qty-btn">+</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <h2>Mã khuyến mãi</h2>
+            
+            <div class="coupon-select">
+                <span><i class="fa-solid fa-ticket"></i>Chọn mã</span>
+                <span><i class="fa-solid fa-chevron-right"></i></span>
+            </div>
+
+            <div class="coupon-input">
+                <input type="text" name="promo_code" form="checkout-form" placeholder="Nhập mã khuyến mãi">
+                <button type="submit" form="checkout-form">Áp dụng</button> 
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Tóm tắt đơn hàng</h2>
+            
+            {% with shipping_fee=15000 %}
+            <div class="summary-row">
+                <span>Tổng tiền hàng</span>
+                <span>{{ cart.total_price|floatformat:0 }}₫</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Phí vận chuyển</span>
+                <span>{{ shipping_fee|floatformat:0 }}₫</span>
+            </div>
+
+            <div class="summary-row total">
+                <span>Tổng thanh toán</span>
+                <span>{{ cart.total_price|add:shipping_fee|floatformat:0 }}₫</span>
+            </div>
+            
+            <button type="submit" form="checkout-form" class="order-btn">Đặt hàng</button>
+            {% endwith %}
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
