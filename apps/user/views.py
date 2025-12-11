@@ -16,7 +16,7 @@ def register_view(request):
         user.save()
         messages.success(request, "Đăng ký thành công!")
         return redirect("login")
-    return render(request, "user/register.html")
+    return render(request, "templates/register.html")
 
 # --- Đăng nhập ---
 # def login_view(request):
@@ -38,6 +38,16 @@ def login_view(request):
     
     return HttpResponse("<h1>Trang Đăng Nhập Tạm Thời Đã Chạy</h1>")
 
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect("home")
+        else:
+            messages.error(request, "Sai thông tin đăng nhập!")
+    return render(request, "templates/login.html")
 
 # --- Đăng xuất ---
 @login_required
