@@ -28,7 +28,7 @@ class BookAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('book', 'user', 'rating', 'created_at')     # Hiển thị thông tin chính của review
     list_filter = ('rating', 'created_at')      # Bộ lọc theo điểm đánh giá và ngày tạo
-    search_fields = ('book__title', 'user__username', 'content')        # Cho phép tìm kiếm theo tên sách, username và nội dung
+    search_fields = ('book__title', 'user__username', 'content')  # Cho phép tìm kiếm theo tên sách, username và nội dung
 
 # Quản lý danh mục sách trong admin
 @admin.register(Category)

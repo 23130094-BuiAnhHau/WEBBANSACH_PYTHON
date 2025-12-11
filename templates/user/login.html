@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - BookStore</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .login-container {
+        width: 100%;
+        max-width: 420px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 100, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .login-header {
+        background: #2e7d32;
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+      }
+
+      .login-header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .login-header p {
+        opacity: 0.9;
+        font-size: 15px;
+      }
+
+      .logo {
+        display: inline-block;
+        background: white;
+        color: #2e7d32;
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .login-form {
+        padding: 40px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2d3748;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s;
+        background: #f8fafc;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #2e7d32;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 16px;
+        background: #2e7d32;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+      }
+
+      .btn-login:hover {
+        background: #1b5e20;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+      }
+
+      .form-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+        color: #718096;
+        font-size: 14px;
+      }
+
+      .form-footer a {
+        color: #2e7d32;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .form-footer a:hover {
+        text-decoration: underline;
+      }
+
+      .message {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .message.error {
+        background: #fff5f5;
+        color: #c53030;
+        border: 1px solid #fc8181;
+      }
+
+      .message.success {
+        background: #f0fff4;
+        color: #2f855a;
+        border: 1px solid #9ae6b4;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 40px;
+        cursor: pointer;
+        color: #718096;
+      }
+
+      @media (max-width: 480px) {
+        .login-container {
+          border-radius: 15px;
+        }
+
+        .login-header {
+          padding: 25px;
+        }
+
+        .login-form {
+          padding: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-header">
+        <div class="logo">BS</div>
+        <h1>Chào Mừng Trở Lại</h1>
+        <p>Đăng nhập để tiếp tục mua sắm</p>
+      </div>
+
+      <div class="login-form">
+        {% if messages %} {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %} {% endif %}
+
+        <form method="POST" action="{% url 'login' %}">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="username">Tên đăng nhập</label>
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              name="username"
+              placeholder="Nhập tên đăng nhập của bạn"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="Nhập mật khẩu của bạn"
+              required
+            />
+            <span class="password-toggle" onclick="togglePassword()">👁️</span>
+          </div>
+
+          <button type="submit" class="btn-login">Đăng Nhập</button>
+        </form>
+
+        <div class="form-footer">
+          <p>
+            Chưa có tài khoản? <a href="{% url 'register' %}">Đăng ký ngay</a>
+          </p>
+          <p>
+            Hoặc
+            <a href="{% url 'home' %}">tiếp tục mua sắm không cần đăng nhập</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function togglePassword() {
+        const passwordField = document.getElementById("password");
+        const toggleBtn = document.querySelector(".password-toggle");
+
+        if (passwordField.type === "password") {
+          passwordField.type = "text";
+          toggleBtn.textContent = "🙈";
+        } else {
+          passwordField.type = "password";
+          toggleBtn.textContent = "👁️";
+        }
+      }
+
+      // Xóa message sau 5 giây
+      setTimeout(() => {
+        const messages = document.querySelectorAll(".message");
+        messages.forEach((msg) => {
+          msg.style.opacity = "0";
+          msg.style.transition = "opacity 0.5s";
+          setTimeout(() => msg.remove(), 500);
+        });
+      }, 5000);
+    </script>
+  </body>
+</html>

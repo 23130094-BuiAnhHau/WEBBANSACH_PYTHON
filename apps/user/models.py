@@ -33,17 +33,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"Hồ sơ của {self.user.username}"
-
-
-# Tài khoản Admin kế thừa User
-class Admin(User):
-    class Meta:
-        verbose_name = "Admin"
-        verbose_name_plural = "Admins"
-
-    # Ghi đè save để bắt buộc admin mang quyền admin
-    def save(self, *args, **kwargs):
-        self.role = 'admin'
-        self.is_admin = True
-        self.is_customer = False
-        super().save(*args, **kwargs)

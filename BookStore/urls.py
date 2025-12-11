@@ -7,8 +7,8 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # --- Home (ví dụ trang chính chỉ là template tĩnh) ---
-    path('', TemplateView.as_view(template_name="home.html"), name="home"),
+    # Home page - app home
+    path('', include('apps.home.urls')), # đã thay đổi ở đây 
 
     # --- App book ---
     path('books/', include('apps.book.urls')),

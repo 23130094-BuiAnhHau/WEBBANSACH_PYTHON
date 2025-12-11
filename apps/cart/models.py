@@ -13,8 +13,12 @@ class Cart(models.Model):
         return f"Giỏ hàng của {self.user.username}"
 
     # Tính tổng tiền trong giỏ
+    @property
+    def total_price(self):
+        return sum(item.total_price for item in self.items.all())
+
     def formatted_total_price(self):
-        total = sum(item.get_total_price() for item in self.items.all())
+        total = self.total_price
         return f"{int(total):,} ₫".replace(",", ".")
     formatted_total_price.short_description = "Tổng tiền (VNĐ)"
 
@@ -35,11 +39,20 @@ class CartItem(models.Model):
     def __str__(self):
         return f"{self.book.title} ({self.quantity})"
 
+    # Giá 1 sản phẩm
+    @property
+    def price(self):
+        return self.book.price
+
     # Tổng giá = giá * số lượng
-    def get_total_price(self):
-        return self.book.price * self.quantity
+    @property
+    def total_price(self):
+        return self.price * self.quantity
+
+    def formatted_price(self):
+        return f"{int(self.price):,} ₫".replace(",", ".")
+    formatted_price.short_description = "Giá (VNĐ)"
 
     def formatted_total_price(self):
-        total = self.get_total_price()
-        return f"{int(total):,} ₫".replace(",", ".")
+        return f"{int(self.total_price):,} ₫".replace(",", ".")
     formatted_total_price.short_description = "Thành tiền (VNĐ)"

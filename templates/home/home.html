@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookStore - Thế giới sách trực tuyến</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: #f8fafc;
+        color: #333;
+      }
+
+      /* Header */
+      .header {
+        background: white;
+        box-shadow: 0 2px 15px rgba(0, 100, 0, 0.08);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #2e7d32;
+      }
+
+      .logo-icon {
+        font-size: 28px;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .logo-text {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #4a5568;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: #2e7d32;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .cart-btn {
+        background: #2e7d32;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      /* Hero Banner */
+      .hero {
+        background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .hero-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .hero-title {
+        font-size: 48px;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      .hero-subtitle {
+        font-size: 20px;
+        margin-bottom: 40px;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-cta {
+        display: inline-block;
+        background: white;
+        color: #2e7d32;
+        padding: 18px 40px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 18px;
+        transition: all 0.3s;
+      }
+
+      .hero-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Categories */
+      .categories {
+        padding: 40px 0;
+        background: white;
+        margin-bottom: 60px;
+      }
+
+      .categories-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .section-title {
+        font-size: 32px;
+        color: #2d3748;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+
+      .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .category-card {
+        background: #f0fff4;
+        padding: 30px 20px;
+        border-radius: 12px;
+        text-align: center;
+        text-decoration: none;
+        color: #2f855a;
+        transition: all 0.3s;
+      }
+
+      .category-card:hover {
+        background: #2e7d32;
+        color: white;
+        transform: translateY(-5px);
+      }
+
+      .category-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      .category-name {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      /* Featured Books */
+      .featured-books {
+        padding: 40px 0;
+        margin-bottom: 60px;
+      }
+
+      .books-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .book-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+
+      .book-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-image {
+        height: 300px;
+        overflow: hidden;
+      }
+
+      .book-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+      }
+
+      .book-card:hover .book-image img {
+        transform: scale(1.05);
+      }
+
+      .book-info {
+        padding: 20px;
+      }
+
+      .book-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        height: 40px;
+        overflow: hidden;
+      }
+
+      .book-author {
+        font-size: 14px;
+        color: #718096;
+        margin-bottom: 10px;
+      }
+
+      .book-price {
+        font-size: 18px;
+        color: #2e7d32;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      /* Bestsellers */
+      .bestsellers {
+        padding: 40px 0;
+        background: #f0fff4;
+        margin-bottom: 60px;
+      }
+
+      /* AI Recommendations */
+      .ai-recommendations {
+        padding: 40px 0;
+        background: white;
+        margin-bottom: 60px;
+      }
+
+      .ai-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .ai-icon {
+        font-size: 32px;
+        color: #2e7d32;
+      }
+
+      .view-all {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .view-all-btn {
+        display: inline-block;
+        background: #2e7d32;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s;
+      }
+
+      .view-all-btn:hover {
+        background: #1b5e20;
+        transform: translateY(-2px);
+      }
+
+      /* Footer */
+      .footer {
+        background: #2d3748;
+        color: white;
+        padding: 60px 0 30px;
+      }
+
+      .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .footer-section h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: #a0aec0;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-section a {
+        color: #cbd5e0;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-section a:hover {
+        color: white;
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid #4a5568;
+        color: #a0aec0;
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 36px;
+        }
+
+        .hero-subtitle {
+          font-size: 18px;
+        }
+
+        .header-container {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .nav-links {
+          gap: 15px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .books-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-container">
+        <a href="{% url 'home' %}" class="logo">
+          <div class="logo-text">BookStore</div>
+        </a>
+
+        <nav class="nav-links">
+          <a href="{% url 'home' %}" class="active">Trang chủ</a>
+          <a href="{% url 'book_list' %}">Sản phẩm</a>
+          <a href="{% url 'book_list' %}?sort=bestseller">Bán chạy</a>
+          <a href="{% url 'book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+
+        <div class="header-actions">
+          {% if user.is_authenticated %}
+          <span>Xin chào, {{ user.username }}</span>
+          <a href="{% url 'cart_detail' %}" class="cart-btn">Giỏ hàng</a>
+          {% else %}
+          <a href="{% url 'login' %}">Đăng nhập</a>
+          <a href="{% url 'cart_detail' %}" class="cart-btn">Giỏ hàng</a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="hero-container">
+        <h1 class="hero-title">Thế giới sách trong tầm tay</h1>
+        <p class="hero-subtitle">
+          Khám phá hàng ngàn tựa sách hay từ mọi thể loại, với chất lượng đảm
+          bảo và giá cả hợp lý nhất
+        </p>
+        <a href="{% url 'book_list' %}" class="hero-cta">Khám phá ngay →</a>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+      <div class="categories-container">
+        <h2 class="section-title">Danh mục sách nổi bật</h2>
+        <div class="categories-grid">
+          <a href="{% url 'book_list' %}?category=1" class="category-card">
+            <div class="category-icon">📖</div>
+            <div class="category-name">Văn học</div>
+          </a>
+          <a href="{% url 'book_list' %}?category=2" class="category-card">
+            <div class="category-icon">💼</div>
+            <div class="category-name">Kinh tế</div>
+          </a>
+          <a href="{% url 'book_list' %}?category=3" class="category-card">
+            <div class="category-icon">🧠</div>
+            <div class="category-name">Tâm lý học</div>
+          </a>
+          <a href="{% url 'book_list' %}?category=4" class="category-card">
+            <div class="category-icon">🔬</div>
+            <div class="category-name">Khoa học</div>
+          </a>
+          <a href="{% url 'book_list' %}?category=5" class="category-card">
+            <div class="category-icon">👶</div>
+            <div class="category-name">Thiếu nhi</div>
+          </a>
+          <a href="{% url 'book_list' %}?category=6" class="category-card">
+            <div class="category-icon">💻</div>
+            <div class="category-name">Công nghệ</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Books -->
+    <section class="featured-books">
+      <div class="books-container">
+        <h2 class="section-title">Sách mới nhất</h2>
+        <div class="books-grid">
+          {% for book in new_books|slice:":8" %}
+          <div
+            class="book-card"
+            onclick="window.location.href='{% url 'book_detail' book.id %}'"
+          >
+            <div class="book-image">
+              {% if book.cover_image %}
+              <img src="/media/book_covers/book1.jpg" alt="{{ book.title }}" />
+              {% else %}
+              <img
+                src="https://via.placeholder.com/250x300?text=No+Image"
+                alt="No Image"
+              />
+              {% endif %}
+            </div>
+
+            <div class="book-info">
+              <h3 class="book-title">{{ book.title|truncatechars:50 }}</h3>
+              <p class="book-author">{{ book.author }}</p>
+              <div class="book-price">{{ book.formatted_price }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="view-all">
+          <a href="{% url 'book_list' %}?sort=new" class="view-all-btn"
+            >Xem tất cả sách mới →</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Bestsellers -->
+    <section class="bestsellers">
+      <div class="books-container">
+        <h2 class="section-title">Sách bán chạy</h2>
+        <div class="books-grid">
+          {% for book in bestsellers|slice:":8" %}
+          <div
+            class="book-card"
+            onclick="window.location.href='{% url 'book_detail' book.id %}'"
+          >
+            <div class="book-image">
+              {% if book.cover_image %}
+              <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" />
+              {% else %}
+              <img
+                src="https://via.placeholder.com/250x300?text=No+Image"
+                alt="No Image"
+              />
+              {% endif %}
+            </div>
+
+            <div class="book-info">
+              <h3 class="book-title">{{ book.title|truncatechars:50 }}</h3>
+              <p class="book-author">{{ book.author }}</p>
+              <div class="book-price">{{ book.formatted_price }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="view-all">
+          <a href="{% url 'book_list' %}?sort=bestseller" class="view-all-btn"
+            >Xem tất cả sách bán chạy →</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Recommendations (chỉ hiển thị khi đã đăng nhập) -->
+    {% if user.is_authenticated %}
+    <section class="ai-recommendations">
+      <div class="books-container">
+        <div class="ai-header">
+          <h2 class="section-title">AI gợi ý dành riêng cho bạn</h2>
+        </div>
+
+        <div class="books-grid">
+          {% for book in ai_recommendations|slice:":8" %}
+          <div
+            class="book-card"
+            onclick="window.location.href='{% url 'book_detail' book.id %}'"
+          >
+            <div class="book-image">
+              {% if book.cover_image %}
+              <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" />
+              {% else %}
+              <img
+                src="https://via.placeholder.com/250x300?text=No+Image"
+                alt="No Image"
+              />
+              {% endif %}
+            </div>
+
+            <div class="book-info">
+              <h3 class="book-title">{{ book.title|truncatechars:50 }}</h3>
+              <p class="book-author">{{ book.author }}</p>
+              <div class="book-price">{{ book.formatted_price }}</div>
+            </div>
+          </div>
+          {% empty %}
+          <p
+            style="
+              grid-column: 1 / -1;
+              text-align: center;
+              padding: 40px;
+              color: #718096;
+            "
+          >
+            Đăng nhập để xem gợi ý AI cá nhân hóa
+          </p>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-grid">
+          <div class="footer-section">
+            <h3>BookStore</h3>
+            <p style="color: #cbd5e0; line-height: 1.6">
+              Địa chỉ : <br />
+              Điện thoại:
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Danh mục</h3>
+            <ul>
+              <li><a href="{% url 'book_list' %}?category=1">Văn học</a></li>
+              <li><a href="{% url 'book_list' %}?category=2">Kinh tế</a></li>
+              <li><a href="{% url 'book_list' %}?category=3">Tâm lý học</a></li>
+              <li><a href="{% url 'book_list' %}?category=4">Khoa học</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h3>Hỗ trợ</h3>
+            <ul>
+              <li><a href="#">Câu hỏi thường gặp</a></li>
+              <li><a href="#">Hướng dẫn đặt hàng</a></li>
+              <li><a href="#">Chính sách vận chuyển</a></li>
+              <li><a href="#">Chính sách hoàn trả</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h3>Kết nối với chúng tôi</h3>
+            <ul>
+              <li><a href="#">Facebook</a></li>
+              <li><a href="#">Instagram</a></li>
+              <li><a href="#">Twitter</a></li>
+              <li><a href="#">YouTube</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="copyright">
+          <p>© 2024 BookStore. Dự án học tập</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Animation cho các section
+      const sections = document.querySelectorAll("section");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      sections.forEach((section) => {
+        section.style.opacity = "0";
+        section.style.transform = "translateY(30px)";
+        section.style.transition = "all 0.5s ease";
+        observer.observe(section);
+      });
+
+      // Counter animation cho số liệu
+      const counters = document.querySelectorAll(".counter");
+      counters.forEach((counter) => {
+        const target = +counter.getAttribute("data-target");
+        const increment = target / 200;
+        let current = 0;
+
+        const updateCounter = () => {
+          if (current < target) {
+            current += increment;
+            counter.textContent = Math.ceil(current);
+            setTimeout(updateCounter, 1);
+          } else {
+            counter.textContent = target;
+          }
+        };
+
+        observer.observe(counter.parentElement);
+        updateCounter();
+      });
+
+      // Hiệu ứng hover cho book cards
+      document.querySelectorAll(".book-card").forEach((card) => {
+        card.addEventListener("mouseenter", function () {
+          this.style.transform = "translateY(-10px)";
+        });
+
+        card.addEventListener("mouseleave", function () {
+          this.style.transform = "translateY(0)";
+        });
+      });
+    </script>
+  </body>
+</html>

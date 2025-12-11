@@ -7,7 +7,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 # Sách
 class Book(models.Model):
     title = models.CharField(max_length=200)                     # Tiêu đề sách
