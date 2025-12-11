@@ -1,0 +1,215 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng</title>
+
+    <!-- LINK CSS RIÊNG -->
+    <link rel="stylesheet" href="{% static 'order/order_detail.css' %} ">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+<div class="order-detail-container">
+
+    <!-- THÔNG TIN ĐƠN -->
+    <div class="card">
+        <h2>Chi tiết đơn hàng #DH001</h2>
+
+        <p><b>Ngày đặt:</b> 02/12/2025</p>
+        <p><b>Trạng thái:</b>
+            <span class="order-status shipping">Đang giao</span>
+        </p>
+    </div>
+
+    <!-- SẢN PHẨM -->
+    <div class="card">
+        <h2>Các sản phẩm trong đơn</h2>
+
+        <div class="product-item">
+            <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg">
+            <div class="product-info">
+                <p><b>Sách: 101 Từ Đầu Tiên Cho Bé</b></p>
+                <p>Số lượng: 1</p>
+            </div>
+            <div class="product-price">48,000đ</div>
+        </div>
+
+        <div class="product-item">
+            <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg">
+            <div class="product-info">
+                <p><b>Sách Kỹ Năng Sống</b></p>
+                <p>Số lượng: 2</p>
+            </div>
+            <div class="product-price">120,000đ</div>
+        </div>
+    </div>
+
+    <!-- TỔNG TIỀN -->
+    <div class="card">
+        <h2>Tổng tiền</h2>
+
+        <div class="total-row">
+            <span>Tạm tính</span>
+            <span>168,000đ</span>
+        </div>
+
+        <div class="total-row">
+            <span>Phí vận chuyển</span>
+            <span>15,000đ</span>
+        </div>
+
+        <div class="total-row total-final">
+            <span>Tổng thanh toán</span>
+            <span>183,000đ</span>
+        </div>
+    </div>
+
+    <!-- NÚT HÀNH ĐỘNG -->
+    <div class="card">
+        <div class="action-buttons">
+            <button class="btn btn-review">
+                <i class="fa-solid fa-star"></i> Đánh giá sản phẩm
+            </button>
+
+            <button class="btn btn-rebuy">
+                <i class="fa-solid fa-cart-shopping"></i> Mua lại
+            </button>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html> {% endcomment %}
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng #DH001</title>
+
+    <link rel="stylesheet" href="{% static 'order/order_detail.css' %} ">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="order-detail-container">
+    
+    <a href="#" class="back-link"><i class="fa-solid fa-chevron-left"></i> Quay lại lịch sử đơn hàng</a>
+
+    <div class="card header-card">
+        <h2>Chi tiết đơn hàng <span class="order-code">#DH001</span></h2>
+
+        <div class="order-meta">
+            <p><b>Ngày đặt:</b> 02/12/2025</p>
+            <p><b>Trạng thái:</b>
+                <span class="order-status status-shipping">
+                    <i class="fa-solid fa-truck-fast"></i> Đang giao
+                </span>
+            </p>
+        </div>
+    </div>
+    
+    <div class="main-grid">
+
+        <div class="summary-column"> 
+
+            <div class="card product-list-card">
+                <h2><i class="fa-solid fa-box-open"></i> Các sản phẩm trong đơn</h2>
+
+                <div class="product-item">
+                    <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg" alt="101 Từ Đầu Tiên">
+                    <div class="product-info">
+                        <p class="product-name"><b>Sách: 101 Từ Đầu Tiên Cho Bé</b></p>
+                        <p class="product-qty">Số lượng: 1</p>
+                    </div>
+                    <div class="product-price">48,000đ</div>
+                </div>
+
+                <div class="product-item">
+                    <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg" alt="Sách Kỹ Năng Sống">
+                    <div class="product-info">
+                        <p class="product-name"><b>Sách Kỹ Năng Sống</b></p>
+                        <p class="product-qty">Số lượng: 2</p>
+                    </div>
+                    <div class="product-price">120,000đ</div>
+                </div>
+            </div>
+
+            <div class="card total-card">
+                <h2><i class="fa-solid fa-receipt"></i> Tóm tắt thanh toán</h2>
+
+                <div class="total-row">
+                    <span>Tạm tính (3 sản phẩm)</span>
+                    <span>168,000đ</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Phí vận chuyển</span>
+                    <span>15,000đ</span>
+                </div>
+                
+                <div class="total-row discount-row">
+                    <span>Mã giảm giá (FREESHIP)</span>
+                    <span>-5,000đ</span>
+                </div>
+
+
+                <div class="total-row total-final">
+                    <span>Tổng thanh toán</span>
+                    <span class="final-price">178,000đ</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-column">
+
+            <div class="card shipping-card">
+                <h2><i class="fa-solid fa-location-dot"></i> Thông tin giao hàng</h2>
+                <p><b>Người nhận:</b> Nguyễn Văn A</p>
+                <p><b>SĐT:</b> 090xxxxxxx</p>
+                <p><b>Địa chỉ:</b> 123 Đường Sách, Phường Bến Nghé, Quận 1, TPHCM</p>
+                <p><b>Phương thức:</b> Giao hàng tiêu chuẩn</p>
+            </div>
+
+            <div class="card payment-card">
+                <h2><i class="fa-solid fa-credit-card"></i> Thông tin thanh toán</h2>
+                <p><b>Phương thức:</b> Thanh toán khi nhận hàng (COD)</p>
+                <p><b>Trạng thái:</b> 
+                    <span class="payment-status status-unpaid">Chưa thanh toán</span>
+                </p>
+            </div>
+
+            <div class="card notes-card">
+                <h2><i class="fa-solid fa-note-sticky"></i> Ghi chú đơn hàng</h2>
+                <p>Vui lòng giao hàng sau 17h, gọi trước khi đến.</p>
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="action-buttons-container">
+        <div class="card">
+            <div class="action-buttons">
+                <button class="btn btn-review">
+                    <i class="fa-solid fa-star"></i> Đánh giá sản phẩm
+                </button>
+
+                <button class="btn btn-rebuy">
+                    <i class="fa-solid fa-cart-shopping"></i> Mua lại
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
