@@ -15,7 +15,7 @@ def register_view(request):
         user.save()
         messages.success(request, "Đăng ký thành công!")
         return redirect("login")
-    return render(request, "user/register.html")
+    return render(request, "templates/register.html")
 
 # --- Đăng nhập ---
 def login_view(request):
@@ -28,7 +28,7 @@ def login_view(request):
             return redirect("home")
         else:
             messages.error(request, "Sai thông tin đăng nhập!")
-    return render(request, "user/login.html")
+    return render(request, "templates/login.html")
 
 # --- Đăng xuất ---
 @login_required
