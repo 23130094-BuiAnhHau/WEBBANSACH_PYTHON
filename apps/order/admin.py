@@ -41,5 +41,5 @@ class PromotionAdmin(admin.ModelAdmin):
 # ======================= Recommendation =======================
 @admin.register(RecommendationEngine)
 class RecommendationEngineAdmin(admin.ModelAdmin):
-    list_display = ('user', 'created_at')  # ✔ đã tồn tại
+    list_display = ('user', 'created_at')  
     filter_horizontal = ('order_history',)
