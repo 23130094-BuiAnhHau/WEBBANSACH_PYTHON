@@ -1,2 +1,2 @@
---- thay đổi nhỏ ở BookStore/settings.py và BookStore/urls.py
+--- thay đổi nhỏ ở BookStore/settings.py và BookStore/urls.py <br>
 --- thêm app home 
