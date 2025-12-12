@@ -6,7 +6,7 @@ from django.db.models import Q
 # --- Danh sách sách ---
 class BookListView(ListView):
     model = Book
-    template_name = "templates/book_list.html"
+    template_name = "book/book_list.html"
     context_object_name = "books"
     paginate_by = 12
 
@@ -35,5 +35,5 @@ class BookListView(ListView):
 # --- Chi tiết sách ---
 class BookDetailView(DetailView):
     model = Book
-    template_name = "templates/book_detail.html"
+    template_name = "book/book_detail.html"
     context_object_name = "book"
