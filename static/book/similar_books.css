@@ -1,0 +1,58 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+body {
+    background: #f8fafc;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+.hero {
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    padding: 50px 20px;
+    color: white;
+    text-align: center;
+}
+
+.based-on {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 40px;
+}
+
+.based-on span {
+    color: #2e7d32;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 25px;
+}
+
+.book-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    transition: 0.3s;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+}
+
+.book-image {
+    height: 300px;
+}
+
+.book-info {
+    padding: 18px;
+}
+
+.price {
+    color: #2e7d32;
+    font-weight: bold;
+}
