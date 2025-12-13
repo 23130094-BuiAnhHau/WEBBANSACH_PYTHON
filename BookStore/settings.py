@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.cart',
     'apps.order',
     'apps.core',
+    'apps.home',
     "django_extensions",
 ]
 
@@ -58,20 +59,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Thêm middleware tracking lịch sử xem (đặt sau AuthMiddleware)
+MIDDLEWARE += [
+    'apps.book.middleware.BookViewTrackingMiddleware',
+]
+
 ROOT_URLCONF = 'BookStore.urls'
 
 #------------------------------------------------------
 # Thêm dòng này để Django biết trang login của bạn ở đâu
-LOGIN_URL = 'login'
-
-# TẠM THỜI THÊM ĐOẠN NÀY ĐỂ DEBUG TEMPLATES
-print("--- DEBUG TEMPLATES PATH ---")
-print("BASE_DIR:", BASE_DIR)
-# In ra đường dẫn đầy đủ mà Django đang tìm kiếm
-print("Full Templates Path:", BASE_DIR / "templates")
-print("----------------------------")
-#-------------------------------------------------------------------------
-
+LOGIN_URL = 'user:login'
 
 
 TEMPLATES = [
@@ -139,17 +136,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ảnh bìa sách
-import os
-
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+MEDIA_ROOT = BASE_DIR / 'media'

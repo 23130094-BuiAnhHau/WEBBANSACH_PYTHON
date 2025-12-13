@@ -1,0 +1,245 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Sách - BookStore</title>
+
+    
+    <link rel="stylesheet" href="{% static 'book/book_list.css' %}">
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+<body>
+<!-- HEADER -->
+<header class="header">
+
+    <!-- TOP BAR -->
+    <div class="header-top">
+        <div class="header-container">
+
+            <!-- LOGO -->
+            <a href="{% url 'home:home' %}" class="logo">
+                <div class="logo-text">BookStore</div>
+            </a>
+
+            <!-- SEARCH -->
+            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Tìm sách, tác giả, thể loại..."
+                    value="{{ request.GET.search }}"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <!-- ACTIONS -->
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                    <span class="hello-user">
+                        Xin chào, <b>{{ user.username }}</b>
+                    </span>
+                    <a href="{% url 'user:logout' %}" class="login-btn">
+                        Đăng xuất
+                    </a>
+                {% else %}
+                    <a href="{% url 'user:login' %}" class="login-btn">
+                        Đăng nhập
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Giỏ hàng
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTTOM MENU -->
+    <div class="header-bottom">
+        <nav class="nav-links">
+            <a href="{% url 'home:home' %}" class="active">Trang chủ</a>
+            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+    </div>
+
+</header>
+    <!-- Main Content -->
+<main class="container">
+    <h1 class="page-title">Tất cả sách</h1>
+
+    {% for category in categories %}
+        {% with category.books.all as category_books %}
+            {% if category_books %}
+                <section class="category-section">
+                    <h2 class="category-title">
+                        📁 {{ category.name }}
+                    </h2>
+
+                    <div class="books-grid">
+                        {% for book in category_books %}
+                            <a href="{% url 'book:book_detail' book.id %}" class="book-card">
+                                <div class="book-image">
+                                    {% if book.images.first %}
+                                        <img src="{{ book.images.first.image.url }}" alt="{{ book.title }}">
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/250x300/2e7d32/ffffff?text={{ book.title|slice:":12" }}">
+                                    {% endif %}
+                                </div>
+
+                                <div class="book-info">
+                                    <h3 class="book-title">{{ book.title }}</h3>
+                                    <p class="book-author">{{ book.author.name }}</p>
+
+                                    <div class="book-price">
+                                        {{ book.get_display_price|floatformat:0 }} đ
+                                    </div>
+
+                                    {% if user.is_authenticated %}
+                                        <div class="book-actions">
+                                            <form method="POST"
+                                                  action="{% url 'cart:add_to_cart' book.id %}"
+                                                  onclick="event.stopPropagation(); event.preventDefault();">
+                                                {% csrf_token %}
+                                                <button type="submit" class="add-to-cart-btn">
+                                                    🛒 Thêm vào giỏ
+                                                </button>
+                                            </form>
+
+                                            <button class="view-detail-btn"
+                                                    onclick="event.stopPropagation(); window.location.href='{% url 'book:book_detail' book.id %}'">
+                                                👁️ Xem
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        {% endwith %}
+    {% endfor %}
+</main>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>BookStore</h3>
+                <p class="footer-text">
+                    Địa chỉ: <br>
+                    Điện thoại:
+                </p>
+            </div>
+
+            
+            <div class="footer-section">
+                <h3>Danh mục</h3>
+                <ul>
+                    {% for c in categories|slice:":4" %}
+                        <li>
+                            <a href="{% url 'book:book_list' %}?category={{ c.id }}">
+                                {{ c.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                    <!-- 🔥 LINK TRANG MỚI -->
+                    <li>
+                        <a href="{% url 'book:recommend_user' %}">
+                            🤖 Gợi ý cho bạn
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'book:book_list' %}">
+                            📚 Tất cả sách
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Hỗ trợ</h3>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                    <li><a href="#">Chính sách vận chuyển</a></li>
+                    <li><a href="#">Chính sách hoàn trả</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Kết nối</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="copyright">© 2024 BookStore</p>
+    </div>
+</footer>
+
+    
+    <script>
+        // Search với debounce
+        let searchTimeout;
+        const searchInput = document.querySelector('input[name="search"]');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    this.form.submit();
+                }, 500);
+            });
+        }
+
+        // Animation cho book cards
+        document.querySelectorAll('.book-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
+
+        // Thêm vào giỏ hàng với feedback
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const originalText = this.innerHTML;
+                this.innerHTML = '⏳ Đang thêm...';
+                this.disabled = true;
+
+                setTimeout(() => {
+                    this.innerHTML = '✅ Đã thêm!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }, 1500);
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

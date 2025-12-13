@@ -1,0 +1,274 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookStore - Thế giới sách trực tuyến</title>
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+
+    <!-- TOP BAR -->
+    <div class="header-top">
+        <div class="header-container">
+
+            <!-- LOGO -->
+            <a href="{% url 'home:home' %}" class="logo">
+                <div class="logo-text">BookStore</div>
+            </a>
+
+            <!-- SEARCH -->
+            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Tìm sách, tác giả, thể loại..."
+                    value="{{ request.GET.search }}"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <!-- ACTIONS -->
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                    <span class="hello-user">
+                        Xin chào, <b>{{ user.username }}</b>
+                    </span>
+                    <a href="{% url 'user:logout' %}" class="login-btn">
+                        Đăng xuất
+                    </a>
+                {% else %}
+                    <a href="{% url 'user:login' %}" class="login-btn">
+                        Đăng nhập
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Giỏ hàng
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTTOM MENU -->
+    <div class="header-bottom">
+        <nav class="nav-links">
+            <a href="{% url 'home:home' %}" class="active">Trang chủ</a>
+            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+    </div>
+
+</header>
+
+
+<!-- HERO -->
+<section class="hero fade-in">
+    <div class="hero-container">
+        <h1 class="hero-title">Thế giới sách trong tầm tay</h1>
+        <p class="hero-subtitle">
+            Khám phá hàng ngàn tựa sách hay từ mọi thể loại, chất lượng đảm bảo – giá tốt nhất
+        </p>
+        <a href="{% url 'book:book_list' %}" class="hero-cta">Khám phá ngay →</a>
+    </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories fade-in">
+    <div class="categories-container">
+        <h2 class="section-title">Danh mục sách nổi bật</h2>
+
+        <div class="categories-grid">
+            {% for c in categories %}
+            <a href="{% url 'book:book_list' %}?category={{ c.id }}" class="category-card">
+                <div class="category-icon">📚</div>
+                <div class="category-name">{{ c.name }}</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- NEW BOOKS -->
+<section class="featured-books fade-in">
+    <div class="books-container">
+        <h2 class="section-title">Sách mới nhất</h2>
+
+        <div class="books-grid">
+            {% for book in new_books|slice:":8" %}
+            <div class="book-card" onclick="location.href='{% url 'book:book_detail' book.id %}'">
+                <div class="book-image">
+                    {% with book.images.first as img %}
+                        {% if img %}
+                            <img src="{{ img.image.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/250x300?text=No+Image">
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div class="book-info">
+                    <h3 class="book-title">{{ book.title|truncatechars:50 }}</h3>
+                    <p class="book-author">{{ book.author }}</p>
+                    <div class="book-price">
+                        {{ book.get_display_price|floatformat:0 }}₫
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="view-all">
+            <a href="{% url 'book:book_list' %}?sort=new" class="view-all-btn">Xem tất cả →</a>
+        </div>
+    </div>
+</section>
+
+<!-- BESTSELLERS -->
+<section class="bestsellers fade-in">
+    <div class="books-container">
+        <h2 class="section-title">Sách bán chạy</h2>
+
+        <div class="books-grid">
+            {% for book in bestsellers|slice:":8" %}
+            <div class="book-card" onclick="location.href='{% url 'book:book_detail' book.id %}'">
+                <div class="book-image">
+                    {% with book.images.first as img %}
+                        {% if img %}
+                            <img src="{{ img.image.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/250x300?text=No+Image">
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div class="book-info">
+                    <h3 class="book-title">{{ book.title|truncatechars:50 }}</h3>
+                    <p class="book-author">{{ book.author }}</p>
+                    <div class="book-price">
+                        {{ book.get_display_price|floatformat:0 }}₫
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="view-all">
+            <a href="{% url 'book:book_list' %}?sort=bestseller" class="view-all-btn">Xem tất cả →</a>
+        </div>
+    </div>
+</section>
+
+<!-- AI RECOMMEND (user login only) -->
+{% if user.is_authenticated %}
+<section class="ai-recommendations fade-in">
+    <div class="books-container">
+        <h2 class="section-title">AI gợi ý dành riêng cho bạn</h2>
+
+        <div class="books-grid">
+            {% for book in ai_recommendations|slice:":8" %}
+            <div class="book-card" onclick="location.href='{% url 'book:book_detail' book.id %}'">
+                <div class="book-image">
+                    {% with book.images.first as img %}
+                        {% if img %}
+                            <img src="{{ img.image.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/250x300?text=No+Image">
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div class="book-info">
+                    <h3 class="book-title">{{ book.title|truncatechars:50 }}</h3>
+                    <p class="book-author">{{ book.author }}</p>
+                    <div class="book-price">
+                        {{ book.get_display_price|floatformat:0 }}₫
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-text">Đăng nhập để xem gợi ý AI cá nhân hóa</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>BookStore</h3>
+                <p class="footer-text">
+                    Địa chỉ: <br>
+                    Điện thoại:
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Danh mục</h3>
+                <ul>
+                    {% for c in categories|slice:":4" %}
+                        <li>
+                            <a href="{% url 'book:book_list' %}?category={{ c.id }}">
+                                {{ c.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                    <!-- 🔥 LINK TRANG MỚI -->
+                    <li>
+                        <a href="{% url 'book:recommend_user' %}">
+                            🤖 Gợi ý cho bạn
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'book:book_list' %}">
+                            📚 Tất cả sách
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="footer-section">
+                <h3>Hỗ trợ</h3>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                    <li><a href="#">Chính sách vận chuyển</a></li>
+                    <li><a href="#">Chính sách hoàn trả</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Kết nối</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="copyright">© 2024 BookStore</p>
+    </div>
+</footer>
+
+</body>
+</html>

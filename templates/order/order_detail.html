@@ -1,215 +1,335 @@
-{% comment %} {% load static %}
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Chi tiết đơn hàng</title>
-
-    <!-- LINK CSS RIÊNG -->
-    <link rel="stylesheet" href="{% static 'order/order_detail.css' %} ">
-
-    <!-- FONT AWESOME -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-</head>
-<body>
-
-<div class="order-detail-container">
-
-    <!-- THÔNG TIN ĐƠN -->
-    <div class="card">
-        <h2>Chi tiết đơn hàng #DH001</h2>
-
-        <p><b>Ngày đặt:</b> 02/12/2025</p>
-        <p><b>Trạng thái:</b>
-            <span class="order-status shipping">Đang giao</span>
-        </p>
-    </div>
-
-    <!-- SẢN PHẨM -->
-    <div class="card">
-        <h2>Các sản phẩm trong đơn</h2>
-
-        <div class="product-item">
-            <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg">
-            <div class="product-info">
-                <p><b>Sách: 101 Từ Đầu Tiên Cho Bé</b></p>
-                <p>Số lượng: 1</p>
-            </div>
-            <div class="product-price">48,000đ</div>
-        </div>
-
-        <div class="product-item">
-            <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg">
-            <div class="product-info">
-                <p><b>Sách Kỹ Năng Sống</b></p>
-                <p>Số lượng: 2</p>
-            </div>
-            <div class="product-price">120,000đ</div>
-        </div>
-    </div>
-
-    <!-- TỔNG TIỀN -->
-    <div class="card">
-        <h2>Tổng tiền</h2>
-
-        <div class="total-row">
-            <span>Tạm tính</span>
-            <span>168,000đ</span>
-        </div>
-
-        <div class="total-row">
-            <span>Phí vận chuyển</span>
-            <span>15,000đ</span>
-        </div>
-
-        <div class="total-row total-final">
-            <span>Tổng thanh toán</span>
-            <span>183,000đ</span>
-        </div>
-    </div>
-
-    <!-- NÚT HÀNH ĐỘNG -->
-    <div class="card">
-        <div class="action-buttons">
-            <button class="btn btn-review">
-                <i class="fa-solid fa-star"></i> Đánh giá sản phẩm
-            </button>
-
-            <button class="btn btn-rebuy">
-                <i class="fa-solid fa-cart-shopping"></i> Mua lại
-            </button>
-        </div>
-    </div>
-
-</div>
-
-</body>
-</html> {% endcomment %}
-
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiết đơn hàng #DH001</title>
+    <title>Chi tiết đơn hàng #{{ order.id }}</title>
 
-    <link rel="stylesheet" href="{% static 'order/order_detail.css' %} ">
-
+    <link rel="stylesheet" href="{% static 'order/order_detail.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 <body>
+<!-- HEADER -->
+<header class="header">
 
+    <!-- TOP BAR -->
+    <div class="header-top">
+        <div class="header-container">
+
+            <!-- LOGO -->
+            <a href="{% url 'home:home' %}" class="logo">
+                <div class="logo-text">BookStore</div>
+            </a>
+
+            <!-- SEARCH -->
+            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Tìm sách, tác giả, thể loại..."
+                    value="{{ request.GET.search }}"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <!-- ACTIONS -->
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                    <span class="hello-user">
+                        Xin chào, <b>{{ user.username }}</b>
+                    </span>
+                    <a href="{% url 'user:logout' %}" class="login-btn">
+                        Đăng xuất
+                    </a>
+                {% else %}
+                    <a href="{% url 'user:login' %}" class="login-btn">
+                        Đăng nhập
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Giỏ hàng
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTTOM MENU -->
+    <div class="header-bottom">
+        <nav class="nav-links">
+            <a href="{% url 'home:home' %}" class="active">Trang chủ</a>
+            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+    </div>
+
+</header>
 <div class="order-detail-container">
-    
-    <a href="#" class="back-link"><i class="fa-solid fa-chevron-left"></i> Quay lại lịch sử đơn hàng</a>
 
+    <!-- QUAY LẠI -->
+    <a href="{% url 'order:order_history' %}" class="back-link">
+        <i class="fa-solid fa-chevron-left"></i> Quay lại lịch sử đơn hàng
+    </a>
+
+    <!-- HEADER ĐƠN HÀNG -->
     <div class="card header-card">
-        <h2>Chi tiết đơn hàng <span class="order-code">#DH001</span></h2>
+        <h2>
+            Chi tiết đơn hàng
+            <span class="order-code">#DH{{ order.id }}</span>
+        </h2>
 
         <div class="order-meta">
-            <p><b>Ngày đặt:</b> 02/12/2025</p>
-            <p><b>Trạng thái:</b>
-                <span class="order-status status-shipping">
-                    <i class="fa-solid fa-truck-fast"></i> Đang giao
+            <p>
+                <b>Ngày đặt:</b>
+                {{ order.created_at|date:"d/m/Y H:i" }}
+            </p>
+
+            <p>
+                <b>Trạng thái:</b>
+                <span class="order-status status-{{ order.status|lower }}">
+                    {% if order.status == "Pending" %}
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    {% elif order.status == "Shipped" %}
+                        <i class="fa-solid fa-truck-fast"></i>
+                    {% elif order.status == "Completed" %}
+                        <i class="fa-solid fa-circle-check"></i>
+                    {% elif order.status == "Cancelled" %}
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    {% endif %}
+                    {{ order.get_status_display }}
                 </span>
             </p>
         </div>
     </div>
-    
+
     <div class="main-grid">
 
-        <div class="summary-column"> 
+        <!-- CỘT TRÁI -->
+        <div class="summary-column">
 
+            <!-- DANH SÁCH SẢN PHẨM -->
             <div class="card product-list-card">
-                <h2><i class="fa-solid fa-box-open"></i> Các sản phẩm trong đơn</h2>
+                <h2>
+                    <i class="fa-solid fa-box-open"></i>
+                    Các sản phẩm trong đơn
+                </h2>
 
+                {% for item in order.items.all %}
                 <div class="product-item">
-                    <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg" alt="101 Từ Đầu Tiên">
-                    <div class="product-info">
-                        <p class="product-name"><b>Sách: 101 Từ Đầu Tiên Cho Bé</b></p>
-                        <p class="product-qty">Số lượng: 1</p>
-                    </div>
-                    <div class="product-price">48,000đ</div>
-                </div>
+                    <img
+                        src="{{ item.book.image.url }}"
+                        alt="{{ item.book.title }}"
+                        onerror="this.src='{% static 'images/book-default.png' %}'"
+                    >
 
-                <div class="product-item">
-                    <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg" alt="Sách Kỹ Năng Sống">
                     <div class="product-info">
-                        <p class="product-name"><b>Sách Kỹ Năng Sống</b></p>
-                        <p class="product-qty">Số lượng: 2</p>
+                        <p class="product-name">
+                            <b>{{ item.book.title }}</b>
+                        </p>
+                        <p class="product-qty">
+                            Số lượng: {{ item.quantity }}
+                        </p>
                     </div>
-                    <div class="product-price">120,000đ</div>
+
+                    <div class="product-price">
+                        {{ item.get_total_price|floatformat:0 }}đ
+                    </div>
                 </div>
+                {% empty %}
+                <p>Không có sản phẩm nào.</p>
+                {% endfor %}
             </div>
 
+            <!-- TÓM TẮT THANH TOÁN -->
             <div class="card total-card">
-                <h2><i class="fa-solid fa-receipt"></i> Tóm tắt thanh toán</h2>
+                <h2>
+                    <i class="fa-solid fa-receipt"></i>
+                    Tóm tắt thanh toán
+                </h2>
 
                 <div class="total-row">
-                    <span>Tạm tính (3 sản phẩm)</span>
-                    <span>168,000đ</span>
+                    <span>Tạm tính</span>
+                    <span>{{ order.total_price|floatformat:0 }}đ</span>
                 </div>
 
                 <div class="total-row">
                     <span>Phí vận chuyển</span>
-                    <span>15,000đ</span>
-                </div>
-                
-                <div class="total-row discount-row">
-                    <span>Mã giảm giá (FREESHIP)</span>
-                    <span>-5,000đ</span>
+                    <span>
+                        {% if order.total_price >= 500000 %}
+                            0đ
+                        {% else %}
+                            15,000đ
+                        {% endif %}
+                    </span>
                 </div>
 
+                {% if order.user_voucher or order.promo_code %}
+                <div class="total-row discount-row">
+                    <span>Giảm giá</span>
+                    <span>
+                        -{{ order.total_price|add:"-"|add:order.total_amount|floatformat:0 }}đ
+                    </span>
+                </div>
+                {% endif %}
 
                 <div class="total-row total-final">
                     <span>Tổng thanh toán</span>
-                    <span class="final-price">178,000đ</span>
+                    <span class="final-price">
+                        {{ order.total_amount|floatformat:0 }}đ
+                    </span>
                 </div>
             </div>
         </div>
-        
+
+        <!-- CỘT PHẢI -->
         <div class="info-column">
 
+            <!-- GIAO HÀNG -->
             <div class="card shipping-card">
-                <h2><i class="fa-solid fa-location-dot"></i> Thông tin giao hàng</h2>
-                <p><b>Người nhận:</b> Nguyễn Văn A</p>
-                <p><b>SĐT:</b> 090xxxxxxx</p>
-                <p><b>Địa chỉ:</b> 123 Đường Sách, Phường Bến Nghé, Quận 1, TPHCM</p>
+                <h2>
+                    <i class="fa-solid fa-location-dot"></i>
+                    Thông tin giao hàng
+                </h2>
+
+                <p><b>Địa chỉ:</b> {{ order.shipping_address }}</p>
                 <p><b>Phương thức:</b> Giao hàng tiêu chuẩn</p>
             </div>
 
+            <!-- THANH TOÁN -->
             <div class="card payment-card">
-                <h2><i class="fa-solid fa-credit-card"></i> Thông tin thanh toán</h2>
-                <p><b>Phương thức:</b> Thanh toán khi nhận hàng (COD)</p>
-                <p><b>Trạng thái:</b> 
-                    <span class="payment-status status-unpaid">Chưa thanh toán</span>
+                <h2>
+                    <i class="fa-solid fa-credit-card"></i>
+                    Thông tin thanh toán
+                </h2>
+
+                <p>
+                    <b>Phương thức:</b>
+                    {{ order.get_payment_method_display }}
+                </p>
+
+                <p>
+                    <b>Trạng thái:</b>
+                    <span class="payment-status status-unpaid">
+                        {% if order.payment_method == "COD" %}
+                            Chưa thanh toán
+                        {% else %}
+                            Đã thanh toán
+                        {% endif %}
+                    </span>
                 </p>
             </div>
 
+            <!-- GHI CHÚ -->
+            {% if order.note %}
             <div class="card notes-card">
-                <h2><i class="fa-solid fa-note-sticky"></i> Ghi chú đơn hàng</h2>
-                <p>Vui lòng giao hàng sau 17h, gọi trước khi đến.</p>
+                <h2>
+                    <i class="fa-solid fa-note-sticky"></i>
+                    Ghi chú đơn hàng
+                </h2>
+                <p>{{ order.note }}</p>
             </div>
+            {% endif %}
         </div>
-        
     </div>
 
-
+    <!-- NÚT HÀNH ĐỘNG -->
     <div class="action-buttons-container">
         <div class="card">
             <div class="action-buttons">
-                <button class="btn btn-review">
-                    <i class="fa-solid fa-star"></i> Đánh giá sản phẩm
-                </button>
 
-                <button class="btn btn-rebuy">
-                    <i class="fa-solid fa-cart-shopping"></i> Mua lại
+                {% if order.status == "Completed" %}
+                <button class="btn btn-review">
+                    <i class="fa-solid fa-star"></i>
+                    Đánh giá sản phẩm
                 </button>
+                {% endif %}
+
+                <a href="{% url 'order:reorder' order.id %}" class="btn btn-rebuy">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Mua lại
+                </a>
+
+                {% if order.status == "Pending" %}
+                <button class="btn btn-cancel">
+                    <i class="fa-solid fa-xmark"></i>
+                    Hủy đơn hàng
+                </button>
+                {% endif %}
             </div>
         </div>
     </div>
+
 </div>
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>BookStore</h3>
+                <p class="footer-text">
+                    Địa chỉ: <br>
+                    Điện thoại:
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Danh mục</h3>
+                <ul>
+                    {% for c in categories|slice:":4" %}
+                        <li>
+                            <a href="{% url 'book:book_list' %}?category={{ c.id }}">
+                                {{ c.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                    <!-- 🔥 LINK TRANG MỚI -->
+                    <li>
+                        <a href="{% url 'book:recommend_user' %}">
+                            🤖 Gợi ý cho bạn
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'book:book_list' %}">
+                            📚 Tất cả sách
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Hỗ trợ</h3>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                    <li><a href="#">Chính sách vận chuyển</a></li>
+                    <li><a href="#">Chính sách hoàn trả</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Kết nối</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="copyright">© 2024 BookStore</p>
+    </div>
+</footer>
 
 </body>
 </html>

@@ -6,177 +6,169 @@
     <title>Thanh toán</title>
     <link rel="stylesheet" href="{% static 'order/checkout.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 <body>
+<!-- HEADER -->
+<header class="header">
 
-<div class="checkout-container">
+    <!-- TOP BAR -->
+    <div class="header-top">
+        <div class="header-container">
 
+            <!-- LOGO -->
+            <a href="{% url 'home:home' %}" class="logo">
+                <div class="logo-text">BookStore</div>
+            </a>
+
+            <!-- SEARCH -->
+            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Tìm sách, tác giả, thể loại..."
+                    value="{{ request.GET.search }}"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <!-- ACTIONS -->
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                    <span class="hello-user">
+                        Xin chào, <b>{{ user.username }}</b>
+                    </span>
+                    <a href="{% url 'user:logout' %}" class="login-btn">
+                        Đăng xuất
+                    </a>
+                {% else %}
+                    <a href="{% url 'user:login' %}" class="login-btn">
+                        Đăng nhập
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Giỏ hàng
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTTOM MENU -->
+    <div class="header-bottom">
+        <nav class="nav-links">
+            <a href="{% url 'home:home' %}" class="active">Trang chủ</a>
+            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+    </div>
+
+</header>
+{% if messages %}
+    {% for msg in messages %}
+        <div class="alert {{ msg.tags }}">{{ msg }}</div>
+    {% endfor %}
+{% endif %}
+
+<form method="POST" class="checkout-container">
+    {% csrf_token %}
+
+    <!-- ================= LEFT ================= -->
     <div class="left">
 
-        <form method="POST" class="card" id="checkout-form">
-            {% csrf_token %}
+        <!-- ===== THÔNG TIN GIAO HÀNG ===== -->
+        <div class="card">
             <h2>Thông tin giao hàng</h2>
 
-            <input type="text" name="fullname" placeholder="Họ và tên" required>
-            <div class="phone-box">
-                <input type="text" name="phone" placeholder="Số điện thoại" required>
-                <span class="flag">🇻🇳</span>
-            </div>
-            <input type="email" name="email" placeholder="Nhập email (không bắt buộc)">
-            <input type="text" name="country" placeholder="Quốc gia">
-            
-            <input type="text" name="address" placeholder="Địa chỉ, tên đường" required>
-            <input type="text" name="city" placeholder="Tỉnh/TP, Quận/Huyện, Phường/Xã" >
-        </form>
+            <div class="form-group">{{ form.fullname }}</div>
+            <div class="form-group">{{ form.phone }}</div>
+            <div class="form-group">{{ form.email }}</div>
+            <div class="form-group">{{ form.city }}</div>
+            <div class="form-group">{{ form.shipping_address }}</div>
+        </div>
 
-
+        <!-- ===== PHƯƠNG THỨC GIAO HÀNG ===== -->
         <div class="card">
             <h2>Phương thức giao hàng</h2>
+            <input type="text" value="Giao hàng tiêu chuẩn (15.000₫)" readonly>
+        </div>
 
-
-
-    <div id="ship-empty" class="ship-empty">
-        <input type="text" placeholder="Nhập địa chỉ để xem các phương thức giao hàng">
-    </div>
-</div>
-
-
-
-
+        <!-- ===== PHƯƠNG THỨC THANH TOÁN ===== -->
         <div class="card">
             <h2>Phương thức thanh toán</h2>
-
-            <label class="pay-item active">
-                <div class="pay-left">
-                    <input type="radio" name="payment" form="checkout-form" value="cod" checked>
-                    <span>Thanh toán khi giao hàng (COD)</span>
-                </div>
-            </label>
-
-
-            <label class="pay-item">
-                <div class="pay-left">
-                    <input type="radio" name="payment" form="checkout-form" value="bank">
-                    <span>Chuyển khoản qua ngân hàng</span>
-                </div>
-            </label>
-
-            <label class="pay-item">
-                <div class="pay-left">
-                    <input type="radio" name="payment" form="checkout-form" value="qr">
-                    <span>Chuyển khoản qua QR - BIDV</span>
-                </div>
-            </label>
+            {{ form.payment_method }}
         </div>
 
+        <!-- ===== GHI CHÚ ===== -->
         <div class="card">
-            <div class="invoice-header">
-                <h2>Hoá đơn điện tử</h2>
-                <span class="invoice-link">Yêu cầu xuất<i class="fa-solid fa-chevron-right"></i></span>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <input type="text" name="note" form="checkout-form" placeholder="Ghi chú đơn hàng">
+            {{ form.note }}
         </div>
 
     </div>
 
-
+    <!-- ================= RIGHT ================= -->
     <div class="right">
 
+        <!-- ===== GIỎ HÀNG ===== -->
         <div class="card">
             <h2>Giỏ hàng</h2>
 
-            {% comment %} {% for item in cart.items.all %}
-            <div class="product">
-                <img src="{{ item.book.image.url }}" class="product-img">
+            {% for item in cart_items %}
+                <div class="product">
+                    <img src="{% if item.book.images.first %}
+                                {{ item.book.images.first.image.url }}
+                                {% else %}
+                                    https://via.placeholder.com/120
+                                {% endif %}"
+                        class="product-img">
 
-                <div class="product-right">
-                    <div class="product-title-row">
-                        <p class="product-title">
-                            Sách: {{ item.book.title }}
-                        </p>
-
-                        <button type="button" class="delete-btn">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="variant">
-                        <span class="va">Default Title<i class="fa-solid fa-chevron-right"></i></span>
-                    </div>
-
-                    <div class="product-bottom">
-                        <p class="price">{{ item.book.price|floatformat:0 }}₫</p>
-
-                        <div class="qty-box">
-                            <button type="button" class="qty-btn">−</button>
-                            <span class="qty-number">{{ item.quantity }}</span>
-                            <button type="button" class="qty-btn">+</button>
+                    <div class="product-right">
+                        <p class="product-title">{{ item.book.title }}</p>
+                        <div class="product-bottom">
+                            <p class="price">
+                                {{ item.book.get_display_price|floatformat:0 }}₫
+                            </p>
+                            <span>x {{ item.quantity }}</span>
                         </div>
                     </div>
                 </div>
-            </div>
             {% empty %}
-            <p>Giỏ hàng trống.</p>
+                <p>Giỏ hàng trống.</p>
             {% endfor %}
-
-        </div> {% endcomment %}
-            <div class="product">
-                <img src="https://philconnect.edu.vn/wp-content/uploads/2018/02/BOOK.jpg" class="product-img">
-
-                <div class="product-right">
-                    <div class="product-title-row">
-                        <p class="product-title">
-                            Sách: 101 Từ Đầu Tiên Cho Bé - Động Vật (Tái Bản)
-                        </p>
-
-                        <button class="delete-btn">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                    <div class="variant">
-                    <span class="va">Default Title<i class="fa-solid fa-chevron-right"></i></span>
-                    </div>
-
-                    <div class="product-bottom">
-                        <p class="price">48,000đ</p>
-
-                        <div class="qty-box">
-                            <button class="qty-btn">−</button>
-                            <span class="qty-number">1</span>
-                            <button class="qty-btn">+</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
         </div>
 
+        <!-- ===== VOUCHER TRONG VÍ ===== -->
         <div class="card">
-            <h2>Mã khuyến mãi</h2>
-            
-            <div class="coupon-select">
-                <span><i class="fa-solid fa-ticket"></i>Chọn mã</span>
-                <span><i class="fa-solid fa-chevron-right"></i></span>
-            </div>
+            <h2>Voucher của bạn</h2>
 
-            <div class="coupon-input">
-                <input type="text" name="promo_code" form="checkout-form" placeholder="Nhập mã khuyến mãi">
-                <button type="submit" form="checkout-form">Áp dụng</button> 
-            </div>
+            {% if form.user_voucher.field.queryset %}
+                {{ form.user_voucher }}
+            {% else %}
+                <p>Chưa có voucher</p>
+            {% endif %}
         </div>
 
+        <!-- ===== NHẬP MÃ GIẢM GIÁ ===== -->
+        <div class="card">
+            <h2>Nhập mã giảm giá</h2>
+            {{ form.promo_code }}
+        </div>
+
+        <!-- ===== TÓM TẮT ĐƠN ===== -->
         <div class="card">
             <h2>Tóm tắt đơn hàng</h2>
-            
-            {% with shipping_fee=15000 %}
+
             <div class="summary-row">
-                <span>Tổng tiền hàng</span>
-                <span>{{ cart.total_price|floatformat:0 }}₫</span>
+                <span>Tạm tính</span>
+                <span>{{ raw_total|floatformat:0 }}₫</span>
             </div>
 
             <div class="summary-row">
@@ -185,17 +177,106 @@
             </div>
 
             <div class="summary-row total">
-                <span>Tổng thanh toán</span>
-                <span>{{ cart.total_price|add:shipping_fee|floatformat:0 }}₫</span>
+                <strong>Tổng thanh toán</strong>
+                <strong>{{ final_total|floatformat:0 }}₫</strong>
             </div>
-            
-            <button type="submit" form="checkout-form" class="order-btn">Đặt hàng</button>
-            {% endwith %}
+
+            <button type="submit" class="order-btn">
+                Đặt hàng
+            </button>
         </div>
 
     </div>
+</form>
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>BookStore</h3>
+                <p class="footer-text">
+                    Địa chỉ: <br>
+                    Điện thoại:
+                </p>
+            </div>
 
-</div>
+            <div class="footer-section">
+                <h3>Danh mục</h3>
+                <ul>
+                    {% for c in categories|slice:":4" %}
+                        <li>
+                            <a href="{% url 'book:book_list' %}?category={{ c.id }}">
+                                {{ c.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                    <!-- 🔥 LINK TRANG MỚI -->
+                    <li>
+                        <a href="{% url 'book:recommend_user' %}">
+                            🤖 Gợi ý cho bạn
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'book:book_list' %}">
+                            📚 Tất cả sách
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Hỗ trợ</h3>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                    <li><a href="#">Chính sách vận chuyển</a></li>
+                    <li><a href="#">Chính sách hoàn trả</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Kết nối</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="copyright">© 2024 BookStore</p>
+    </div>
+</footer>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const voucherSelect = document.getElementById("id_user_voucher");
+    const promoInput = document.getElementById("id_promo_code");
+
+    if (!voucherSelect || !promoInput) return;
+
+    // Khi chọn voucher → khóa promo code
+    voucherSelect.addEventListener("change", function () {
+        if (this.value) {
+            promoInput.value = "";
+            promoInput.disabled = true;
+        } else {
+            promoInput.disabled = false;
+        }
+    });
+
+    // Khi nhập promo code → khóa voucher
+    promoInput.addEventListener("input", function () {
+        if (this.value.trim() !== "") {
+            voucherSelect.value = "";
+            voucherSelect.disabled = true;
+        } else {
+            voucherSelect.disabled = false;
+        }
+    });
+});
+</script>
 
 </body>
 </html>

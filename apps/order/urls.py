@@ -1,8 +1,13 @@
+# apps/order/urls.py
 from django.urls import path
-from apps.order.views import checkout, order_history
-from apps.order import views #them moi 
+from . import views
+
+app_name = "order"
+
 urlpatterns = [
-    path('', views.checkout, name="root_checkout"), #them de chay checkout.html tinh
-    path("checkout/", checkout, name="checkout"),
-    path("history/", order_history, name="order_history"),
+    path("checkout/", views.checkout, name="checkout"),
+    path("history/", views.order_history, name="order_history"),
+    path("detail/<int:pk>/", views.order_detail, name="order_detail"),
+    path("reorder/<int:pk>/", views.reorder, name="reorder"),
+
 ]
