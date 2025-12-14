@@ -30,7 +30,7 @@
                     type="text"
                     name="search"
                     placeholder="Tìm sách, tác giả, thể loại..."
-                    value="{{ request.GET.search }}"
+                    value="{{ request.GET.search|default:'' }}"
                 >
                 <button type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -39,13 +39,20 @@
 
             <!-- ACTIONS -->
             <div class="header-actions">
+
                 {% if user.is_authenticated %}
                     <span class="hello-user">
                         Xin chào, <b>{{ user.username }}</b>
                     </span>
-                    <a href="{% url 'user:logout' %}" class="login-btn">
-                        Đăng xuất
-                    </a>
+
+                    <!-- LOGOUT (POST) -->
+                    <form action="{% url 'user:logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="login-btn logout-btn">
+                            Đăng xuất
+                        </button>
+                    </form>
+
                 {% else %}
                     <a href="{% url 'user:login' %}" class="login-btn">
                         Đăng nhập
@@ -56,6 +63,7 @@
                     <i class="fa-solid fa-cart-shopping"></i>
                     Giỏ hàng
                 </a>
+
             </div>
 
         </div>
@@ -64,7 +72,7 @@
     <!-- BOTTOM MENU -->
     <div class="header-bottom">
         <nav class="nav-links">
-            <a href="{% url 'home:home' %}" class="active">Trang chủ</a>
+            <a href="{% url 'home:home' %}">Trang chủ</a>
             <a href="{% url 'book:book_list' %}">Sản phẩm</a>
             <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
             <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
@@ -72,6 +80,7 @@
     </div>
 
 </header>
+
 {% if messages %}
     {% for msg in messages %}
         <div class="alert {{ msg.tags }}">{{ msg }}</div>
