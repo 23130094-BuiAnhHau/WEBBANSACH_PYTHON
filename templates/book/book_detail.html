@@ -13,76 +13,76 @@
 
   </head>
 
-  <body>
+<body>
 
     <!-- HEADER -->
-<header class="header">
+  <header class="header">
 
-    <!-- TOP BAR -->
-    <div class="header-top">
-        <div class="header-container">
+      <!-- TOP BAR -->
+      <div class="header-top">
+          <div class="header-container">
 
-            <!-- LOGO -->
-            <a href="{% url 'home:home' %}" class="logo">
-                <div class="logo-text">BookStore</div>
-            </a>
+              <!-- LOGO -->
+              <a href="{% url 'home:home' %}" class="logo">
+                  <div class="logo-text">BookStore</div>
+              </a>
 
-            <!-- SEARCH -->
-            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Tìm sách, tác giả, thể loại..."
-                    value="{{ request.GET.search|default:'' }}"
-                >
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </form>
+              <!-- SEARCH -->
+              <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                  <input
+                      type="text"
+                      name="search"
+                      placeholder="Tìm sách, tác giả, thể loại..."
+                      value="{{ request.GET.search|default:'' }}"
+                  >
+                  <button type="submit">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+              </form>
 
-            <!-- ACTIONS -->
-            <div class="header-actions">
+              <!-- ACTIONS -->
+              <div class="header-actions">
 
-                {% if user.is_authenticated %}
-                    <span class="hello-user">
-                        Xin chào, <b>{{ user.username }}</b>
-                    </span>
+                  {% if user.is_authenticated %}
+                      <span class="hello-user">
+                          Xin chào, <b>{{ user.username }}</b>
+                      </span>
 
-                    <!-- LOGOUT (POST) -->
-                    <form action="{% url 'user:logout' %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="login-btn logout-btn">
-                            Đăng xuất
-                        </button>
-                    </form>
+                      <!-- LOGOUT (POST) -->
+                      <form action="{% url 'user:logout' %}" method="post" style="display:inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="login-btn logout-btn">
+                              Đăng xuất
+                          </button>
+                      </form>
 
-                {% else %}
-                    <a href="{% url 'user:login' %}" class="login-btn">
-                        Đăng nhập
-                    </a>
-                {% endif %}
+                  {% else %}
+                      <a href="{% url 'user:login' %}" class="login-btn">
+                          Đăng nhập
+                      </a>
+                  {% endif %}
 
-                <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    Giỏ hàng
-                </a>
+                  <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
+                      <i class="fa-solid fa-cart-shopping"></i>
+                      Giỏ hàng
+                  </a>
 
-            </div>
+              </div>
 
-        </div>
-    </div>
+          </div>
+      </div>
 
-    <!-- BOTTOM MENU -->
-    <div class="header-bottom">
-        <nav class="nav-links">
-            <a href="{% url 'home:home' %}">Trang chủ</a>
-            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
-            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
-            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
-        </nav>
-    </div>
+      <!-- BOTTOM MENU -->
+      <div class="header-bottom">
+          <nav class="nav-links">
+              <a href="{% url 'home:home' %}">Trang chủ</a>
+              <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+              <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+              <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+          </nav>
+      </div>
 
-</header>
+  </header>
 
     <!-- Main Content -->
     <main class="container">
@@ -99,11 +99,12 @@
       <div class="book-detail">
         <div class="book-main">
           <div class="book-image">
-            {% if book.cover_image %}
-              <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" />
+            {% if book.images.first %}
+                <img src="{{ book.images.first.image.url }}" alt="{{ book.title }}">
             {% else %}
-              <img src="https://via.placeholder.com/400x500?text=No+Image" alt="No Image" />
+                <img src="https://via.placeholder.com/400x500?text=No+Image" alt="No Image">
             {% endif %}
+
           </div>
 
           <div class="book-info">
@@ -131,12 +132,15 @@
 
             <div class="action-buttons">
               {% if book.stock > 0 %}
-                <form method="POST" action="{% url 'cart:add_to_cart' book.id %}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn-primary">
-                    🛒 Thêm vào giỏ hàng
-                  </button>
+                <form id="add-to-cart-form" data-url="{% url 'cart:add_to_cart' book.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-primary">
+                        🛒 Thêm vào giỏ hàng
+                    </button>
                 </form>
+
+                <p id="add-to-cart-message" style="margin-top:10px;color:green;display:none;"></p>
+
               {% else %}
                 <button class="btn-primary" disabled>Hết hàng</button>
               {% endif %}
@@ -273,5 +277,41 @@
     </div>
 </footer>
 
-  </body>
+<script>
+  document.getElementById("add-to-cart-form").addEventListener("submit", function (e) {
+      e.preventDefault(); // ❌ không load trang
+
+      const form = this;
+      const url = form.dataset.url;
+      const csrfToken = form.querySelector("[name=csrfmiddlewaretoken]").value;
+
+      fetch(url, {
+          method: "POST",
+          headers: {
+              "X-CSRFToken": csrfToken,
+              "X-Requested-With": "XMLHttpRequest"
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              const msg = document.getElementById("add-to-cart-message");
+              msg.innerText = data.message;
+              msg.style.display = "block";
+
+              // optional: ẩn sau 2s
+              setTimeout(() => {
+                  msg.style.display = "none";
+              }, 2000);
+          }
+      })
+      .catch(error => {
+          console.error("Error:", error);
+      });
+  });
+</script>
+
+</body>
+
+
 </html>

@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -23,7 +24,7 @@ def add_to_cart(request, book_id):
         cart=cart,
         book=book,
         defaults={
-            "price": book.price,  # lưu giá tại thời điểm thêm
+            "price": book.price,
             "quantity": 1
         }
     )
@@ -32,7 +33,11 @@ def add_to_cart(request, book_id):
         item.quantity += 1
         item.save()
 
-    return redirect("cart:cart_detail")
+    return JsonResponse ({
+        "success": True,
+        "message": "Đã thêm sản phẩm vào giỏ hàng 🛒",
+        "quantity": item.quantity
+    })
 #giảm số lượng
 @login_required
 @require_POST
@@ -62,7 +67,7 @@ def remove_from_cart(request, item_id):
     item.delete()
     return redirect("cart:cart_detail")
 
-#tùy chọn 
+#tùy chọn
 @login_required
 @require_POST
 def update_quantity(request, item_id):
