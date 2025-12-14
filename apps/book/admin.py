@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (
+from apps.book.models import (
     Category,
     Author,
     Book,
