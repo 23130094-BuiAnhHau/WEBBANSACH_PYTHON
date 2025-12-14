@@ -117,8 +117,8 @@
                                     {% if user.is_authenticated %}
                                         <div class="book-actions">
                                             <form method="POST"
-                                                  action="{% url 'cart:add_to_cart' book.id %}"
-                                                  onclick="event.stopPropagation(); event.preventDefault();">
+                                                    action="{% url 'cart:add_to_cart' book.id %}"
+                                                    onclick="event.stopPropagation(); event.preventDefault();">
                                                 {% csrf_token %}
                                                 <button type="submit" class="add-to-cart-btn">
                                                     🛒 Thêm vào giỏ
