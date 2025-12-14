@@ -87,7 +87,7 @@
     <!-- Main Content -->
     <main class="container">
       <div class="breadcrumb">
-        <a href="{% url 'home' %}">Trang chủ</a> &gt;
+        <a href="{% url 'home:home' %}">Trang chủ</a> &gt;
         <a href="{% url 'book:book_list' %}">Sách</a> &gt;
         <a href="{% url 'book:book_list' %}?category={{ book.category.id }}">
           {{ book.category.name }}
@@ -131,7 +131,7 @@
 
             <div class="action-buttons">
               {% if book.stock > 0 %}
-                <form method="POST" action="{% url 'add_to_cart' book.id %}">
+                <form method="POST" action="{% url 'cart:add_to_cart' book.id %}">
                   {% csrf_token %}
                   <button type="submit" class="btn-primary">
                     🛒 Thêm vào giỏ hàng
