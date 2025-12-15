@@ -1,0 +1,415 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng -BookStore</title>
+    <link rel="stylesheet" href="{% static 'cart/cart_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+</head>
+<body>
+    <!-- HEADER -->
+<header class="header">
+
+    <!-- TOP BAR -->
+    <div class="header-top">
+        <div class="header-container">
+
+            <!-- LOGO -->
+            <a href="{% url 'home:home' %}" class="logo">
+                <div class="logo-text">BookStore</div>
+            </a>
+
+            <!-- SEARCH -->
+            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Tìm sách, tác giả, thể loại..."
+                    value="{{ request.GET.search|default:'' }}"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <!-- ACTIONS -->
+            <div class="header-actions">
+
+                {% if user.is_authenticated %}
+                    <span class="hello-user">
+                        Xin chào, <b>{{ user.username }}</b>
+                    </span>
+
+                    <!-- LOGOUT (POST) -->
+                    <form action="{% url 'user:logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="login-btn logout-btn">
+                            Đăng xuất
+                        </button>
+                    </form>
+
+                {% else %}
+                    <a href="{% url 'user:login' %}" class="login-btn">
+                        Đăng nhập
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Giỏ hàng
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTTOM MENU -->
+    <div class="header-bottom">
+        <nav class="nav-links">
+            <a href="{% url 'home:home' %}">Trang chủ</a>
+            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+    </div>
+
+</header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="page-title fade-in">🛒 Giỏ hàng của bạn</h1>
+        
+        <!-- Kiểm tra nếu có giỏ hàng và có sản phẩm -->
+        {% if cart and cart.items.all %}
+            <div class="cart-container fade-in">
+                <!-- Cart Items -->
+                <div class="cart-items">
+                    <!-- Duyệt qua tất cả items trong giỏ hàng -->
+                    {% for item in cart.items.all %}
+                    <div class="cart-item" id="item-{{ item.id }}">
+                        <div class="item-image">
+                            <!-- Hiển thị ảnh sách (dùng 30 ảnh book1.jpg đến book30.jpg) -->
+                            {% with item.book.id|add:"-1"|divisibleby:"30"|add:"1" as image_num %}
+                            <img src="/media/book_covers/book{{ image_num }}.jpg" 
+                                 alt="{{ item.book.title }}"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/100x120/2e7d32/ffffff?text={{ item.book.title|slice:":10" }}'">
+                            {% endwith %}
+                        </div>
+                        
+                        <div class="item-info">
+                            <h3 class="item-title">{{ item.book.title }}</h3>
+                            <p class="item-author">Tác giả: {{ item.book.author }}</p>
+                            <div class="item-price vnd-format">
+                                {{ item.price|floatformat:0 }}
+                            </div>
+                        </div>
+                        
+                        <div class="item-actions">
+                            <!-- Quantity control -->
+                            <div class="quantity-control">
+                                <form method="POST" action="{% url 'cart:decrease_quantity' item.id %}" 
+                                      class="update-form" data-item-id="{{ item.id }}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="button" class="quantity-btn decrease-btn">-</button>
+                                </form>
+                                
+                                <span class="quantity" id="quantity-{{ item.id }}">{{ item.quantity }}</span>
+                                
+                                <form method="POST" action="{% url 'cart:add_to_cart' item.book.id %}" 
+                                      class="update-form" data-item-id="{{ item.id }}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="button" class="quantity-btn increase-btn">+</button>
+                                </form>
+                            </div>
+                            
+                            <!-- Total price for this item -->
+                            <div class="item-total vnd-format" id="total-{{ item.id }}">
+                                {{ item.get_total_price|floatformat:0 }}
+                            </div>
+                            
+                            <!-- Remove button -->
+                            <form method="POST" action="{% url 'cart:remove_from_cart' item.id %}" 
+                                  class="remove-form" data-item-id="{{ item.id }}">
+                                {% csrf_token %}
+                                <button type="button" class="remove-btn">
+                                    🗑️ Xóa sản phẩm
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Cart Summary -->
+                <div class="cart-summary">
+                    <h2 class="summary-title">Tóm tắt đơn hàng</h2>
+                    
+                    <div class="summary-row">
+                        <span>Tạm tính:</span>
+                        <span class="vnd-format" id="cart-subtotal">
+                            {{ cart.total_price|floatformat:0 }}
+                        </span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span>Phí vận chuyển:</span>
+                        <span class="vnd-format">0</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span>Giảm giá:</span>
+                        <span class="vnd-format">0</span>
+                    </div>
+                    
+                    <div class="summary-total">
+                        <span>Tổng cộng:</span>
+                        <span class="vnd-format" id="cart-total">
+                            {{ cart.total_price|floatformat:0 }}
+                        </span>
+                    </div>
+                    
+                    <button class="checkout-btn" id="checkout-btn">
+                        🚀 Tiến hành đặt hàng
+                    </button>
+                    
+                    <button class="continue-btn" onclick="window.location.href='{% url 'book_list' %}'">
+                        ← Tiếp tục mua sắm
+                    </button>
+                    
+                    <div style="margin-top: 20px; font-size: 14px; color: #718096; text-align: center;">
+                        <p>Thanh toán an toàn | Giao hàng miễn phí | Đổi trả dễ dàng</p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Empty Cart -->
+            <div class="empty-cart fade-in">
+                <div class="empty-icon">🛒</div>
+                <h2 class="empty-title">Giỏ hàng trống</h2>
+                <p class="empty-text">
+                    Bạn chưa có sản phẩm nào trong giỏ hàng.<br>
+                    Hãy khám phá những cuốn sách hay nhất tại Minh Long Book!
+                </p>
+                <a href="{% url 'book:book_list' %}" class="shop-btn">Mua sắm ngay</a>
+                
+                <div style="margin-top: 40px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <a href="{% url 'book:book_list' %}?sort=new" style="text-decoration: none; color: inherit;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">📚</div>
+                            <div style="font-weight: 500;">Sách mới nhất</div>
+                        </div>
+                    </a>
+                    <a href="{% url 'book:book_list' %}?sort=bestseller" style="text-decoration: none; color: inherit;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🔥</div>
+                            <div style="font-weight: 500;">Bán chạy nhất</div>
+                        </div>
+                    </a>
+                    <a href="{% url 'book:book_list' %}?category=1" style="text-decoration: none; color: inherit;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">⭐</div>
+                            <div style="font-weight: 500;">Văn học</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>© 2024 BookStore. Tất cả các quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <script>
+        // CSRF token helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Format số thành VND
+        function formatVND(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' ₫';
+        }
+
+        // Cập nhật số lượng sản phẩm
+        async function updateQuantity(itemId, change) {
+            const quantityElement = document.getElementById(`quantity-${itemId}`);
+            const totalElement = document.getElementById(`total-${itemId}`);
+            const btn = event.target;
+            
+            let currentQuantity = parseInt(quantityElement.textContent);
+            let newQuantity = currentQuantity + change;
+            
+            if (newQuantity < 1) return;
+            
+            // Hiển thị loading
+            btn.disabled = true;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                // Gửi request cập nhật
+                const formData = new FormData();
+                formData.append('quantity', newQuantity);
+                
+                const response = await fetch(`/cart/update/${itemId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    // Cập nhật UI
+                    quantityElement.textContent = newQuantity;
+                    
+                    // Giả sử mỗi sản phẩm giá 100.000đ để tính tổng (trong thực tế sẽ lấy từ response)
+                    const itemPrice = 100000; // Đây là giá mẫu
+                    const newTotal = itemPrice * newQuantity;
+                    totalElement.textContent = formatVND(newTotal);
+                    
+                    // Cập nhật tổng giỏ hàng
+                    updateCartTotal();
+                }
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+                alert('Có lỗi xảy ra khi cập nhật số lượng');
+            } finally {
+                // Khôi phục button
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // Xóa sản phẩm
+        async function removeItem(itemId) {
+            if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+                return;
+            }
+            
+            const btn = event.target;
+            const itemElement = document.getElementById(`item-${itemId}`);
+            
+            // Hiển thị loading
+            btn.disabled = true;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                const response = await fetch(`/cart/remove/${itemId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    }
+                });
+                
+                if (response.ok) {
+                    // Xóa item khỏi UI
+                    itemElement.style.opacity = '0';
+                    itemElement.style.transform = 'translateX(-50px)';
+                    itemElement.style.transition = 'all 0.3s';
+                    
+                    setTimeout(() => {
+                        itemElement.remove();
+                        updateCartTotal();
+                        
+                        // Kiểm tra nếu giỏ hàng trống
+                        if (document.querySelectorAll('.cart-item').length === 0) {
+                            location.reload(); // Reload để hiển thị empty cart
+                        }
+                    }, 300);
+                }
+            } catch (error) {
+                console.error('Error removing item:', error);
+                alert('Có lỗi xảy ra khi xóa sản phẩm');
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // Cập nhật tổng giỏ hàng (giả sử)
+        function updateCartTotal() {
+            // Trong thực tế, sẽ gọi API để lấy tổng mới
+            // Ở đây giả sử tính tổng từ tất cả items
+            let subtotal = 0;
+            document.querySelectorAll('.item-total').forEach(el => {
+                const totalText = el.textContent.replace(/[^\d]/g, '');
+                subtotal += parseInt(totalText) || 0;
+            });
+            
+            document.getElementById('cart-subtotal').textContent = formatVND(subtotal);
+            document.getElementById('cart-total').textContent = formatVND(subtotal);
+        }
+
+        // Thanh toán
+        document.getElementById('checkout-btn')?.addEventListener('click', function() {
+            alert('đây sẽ là trang xác nhận đơn hàng.');
+        });
+
+        // Event listeners cho các buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Increase buttons
+            document.querySelectorAll('.increase-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.closest('.update-form').dataset.itemId;
+                    updateQuantity(itemId, 1);
+                });
+            });
+            
+            // Decrease buttons
+            document.querySelectorAll('.decrease-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.closest('.update-form').dataset.itemId;
+                    updateQuantity(itemId, -1);
+                });
+            });
+            
+            // Remove buttons
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.closest('.remove-form').dataset.itemId;
+                    removeItem(itemId);
+                });
+            });
+            
+            // Format tất cả giá tiền
+            document.querySelectorAll('.vnd-format').forEach(el => {
+                const number = parseInt(el.textContent.replace(/[^\d]/g, ''));
+                if (!isNaN(number)) {
+                    el.textContent = formatVND(number);
+                }
+            });
+            
+            // Animation cho cart items
+            document.querySelectorAll('.cart-item').forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.5s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
