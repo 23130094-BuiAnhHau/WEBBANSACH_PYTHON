@@ -111,27 +111,40 @@
             <h1>{{ book.title }}</h1>
             <div class="book-author">Tác giả: {{ book.author }}</div>
 
-            <div class="book-price">{{ book.formatted_price }}</div>
+            <div class="book-price">
+                {% if book.sale_price and book.sale_price < book.price %}
+                    <span class="sale-price">
+                        {{ book.sale_price|floatformat:0 }} đ
+                    </span>
+                    <span class="original-price">
+                        {{ book.price|floatformat:0 }} đ
+                    </span>
+                {% else %}
+                    <span class="normal-price">
+                        {{ book.price|floatformat:0 }} đ
+                    </span>
+                {% endif %}
+            </div>
 
             {% if book.stock > 0 %}
-              <span class="stock-status in-stock">
+                <span class="stock-status in-stock">
                 📦 Còn hàng ({{ book.stock }} sản phẩm)
-              </span>
+                </span>
             {% else %}
-              <span class="stock-status out-of-stock">⚠️ Hết hàng</span>
+                <span class="stock-status out-of-stock">⚠️ Hết hàng</span>
             {% endif %}
 
             <div class="book-meta">
-              <div class="meta-item">
+                <div class="meta-item">
                 📁 Danh mục: {{ book.category.name }}
-              </div>
-              <div class="meta-item">
-                📅 Xuất bản: {{ book.published_date|date:"d/m/Y" }}
-              </div>
+                </div>
+                <div class="meta-item">
+                    📅 Xuất bản: {{ book.published_date|date:"d/m/Y" }}
+                </div>
             </div>
 
             <div class="action-buttons">
-              {% if book.stock > 0 %}
+                {% if book.stock > 0 %}
                 <form id="add-to-cart-form" data-url="{% url 'cart:add_to_cart' book.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn-primary">
@@ -141,16 +154,16 @@
 
                 <p id="add-to-cart-message" style="margin-top:10px;color:green;display:none;"></p>
 
-              {% else %}
+                {% else %}
                 <button class="btn-primary" disabled>Hết hàng</button>
-              {% endif %}
+                {% endif %}
 
-              <button class="btn-secondary"
-                      onclick="window.location.href='{% url 'book:book_list' %}'">
+                <button class="btn-secondary"
+                        onclick="window.location.href='{% url 'book:book_list' %}'">
                 ← Quay lại
-              </button>
+                </button>
+                </div>
             </div>
-          </div>
         </div>
 
         <!-- Description -->
@@ -183,7 +196,7 @@
             <div class="books-grid">
                 {% for b in similar_books %}
                     <div class="book-card">
-                        <a href="{% url 'book:detail' b.id %}">
+                        <a href="{% url 'book:book_detail' b.id %}">
                             <div class="book-image">
                                 {% if b.images.first %}
                                     <img src="{{ b.images.first.image.url }}" alt="{{ b.title }}">

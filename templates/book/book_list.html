@@ -85,60 +85,99 @@
 
     <!-- Main Content -->
 <main class="container">
-    <h1 class="page-title">Tất cả sách</h1>
 
-    {% for category in categories %}
-        {% with category.books.all as category_books %}
-            {% if category_books %}
-                <section class="category-section">
-                    <h2 class="category-title">
-                        📁 {{ category.name }}
-                    </h2>
+    {% if request.GET.category %}
+        
+        {# TRƯỜNG HỢP: ĐANG XEM 1 DANH MỤC #}
+    
 
-                    <div class="books-grid">
-                        {% for book in category_books %}
-                            <a href="{% url 'book:book_detail' book.id %}" class="book-card">
-                                <div class="book-image">
-                                    {% if book.images.first %}
-                                        <img src="{{ book.images.first.image.url }}" alt="{{ book.title }}">
-                                    {% else %}
-                                        <img src="https://via.placeholder.com/250x300/2e7d32/ffffff?text={{ book.title|slice:":12" }}">
-                                    {% endif %}
-                                </div>
+        <h1 class="page-title">
+            Danh mục: {{ current_category.name }}
+        </h1>
 
-                                <div class="book-info">
-                                    <h3 class="book-title">{{ book.title }}</h3>
-                                    <p class="book-author">{{ book.author.name }}</p>
+        <div class="books-grid">
+            {% for book in books %}
+                <a href="{% url 'book:book_detail' book.id %}" class="book-card">
+                    <div class="book-image">
+                        {% if book.images.first %}
+                            <img src="{{ book.images.first.image.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/250x300/2e7d32/ffffff?text={{ book.title|slice:":12" }}">
+                        {% endif %}
+                    </div>
 
-                                    <div class="book-price">
-                                        {{ book.get_display_price|floatformat:0 }} đ
+                    <div class="book-info">
+                        <h3 class="book-title">{{ book.title }}</h3>
+                        <p class="book-author">{{ book.author.name }}</p>
+
+                        <div class="book-price">
+                            {{ book.get_display_price|floatformat:0 }} đ
+                        </div>
+
+                        {% if user.is_authenticated %}
+                            <div class="book-actions">
+                                <form method="POST"
+                                        action="{% url 'cart:add_to_cart' book.id %}"
+                                        onclick="event.stopPropagation(); event.preventDefault();">
+                                    {% csrf_token %}
+                                    <button type="submit" class="add-to-cart-btn">
+                                        🛒 Thêm vào giỏ
+                                    </button>
+                                </form>
+
+                                <button class="view-detail-btn"
+                                        onclick="event.stopPropagation(); window.location.href='{% url 'book:book_detail' book.id %}'">
+                                    👁️ Xem
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+            {% empty %}
+                <p>Danh mục này hiện chưa có sách.</p>
+            {% endfor %}
+        </div>
+
+    {% else %}
+    
+        {# TRƯỜNG HỢP: TẤT CẢ SÁCH #}
+
+        <h1 class="page-title">Tất cả sách</h1>
+
+        {% for category in categories %}
+            {% with category.books.all as category_books %}
+                {% if category_books %}
+                    <section class="category-section">
+                        <h2 class="category-title">📁 {{ category.name }}</h2>
+
+                        <div class="books-grid">
+                            {% for book in category_books %}
+                                <a href="{% url 'book:book_detail' book.id %}" class="book-card">
+                                    
+                                    <div class="book-image">
+                                        {% if book.images.first %}
+                                            <img src="{{ book.images.first.image.url }}">
+                                        {% else %}
+                                            <img src="https://via.placeholder.com/250x300">
+                                        {% endif %}
                                     </div>
 
-                                    {% if user.is_authenticated %}
-                                        <div class="book-actions">
-                                            <form method="POST"
-                                                    action="{% url 'cart:add_to_cart' book.id %}"
-                                                    onclick="event.stopPropagation(); event.preventDefault();">
-                                                {% csrf_token %}
-                                                <button type="submit" class="add-to-cart-btn">
-                                                    🛒 Thêm vào giỏ
-                                                </button>
-                                            </form>
-
-                                            <button class="view-detail-btn"
-                                                    onclick="event.stopPropagation(); window.location.href='{% url 'book:book_detail' book.id %}'">
-                                                👁️ Xem
-                                            </button>
+                                    <div class="book-info">
+                                        <h3>{{ book.title }}</h3>
+                                        <p>{{ book.author.name }}</p>
+                                        <div class="book-price">
+                                            {{ book.get_display_price|floatformat:0 }} đ
                                         </div>
-                                    {% endif %}
-                                </div>
-                            </a>
-                        {% endfor %}
-                    </div>
-                </section>
-            {% endif %}
-        {% endwith %}
-    {% endfor %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
+
+    {% endif %}
 </main>
 
 
@@ -166,7 +205,7 @@
                         </li>
                     {% endfor %}
 
-                    <!-- 🔥 LINK TRANG MỚI -->
+                    <!--  LINK TRANG MỚI -->
                     <li>
                         <a href="{% url 'book:recommend_user' %}">
                             🤖 Gợi ý cho bạn
