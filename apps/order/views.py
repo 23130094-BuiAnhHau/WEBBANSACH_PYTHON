@@ -27,12 +27,12 @@ def checkout(request):
         messages.error(request, "Giỏ hàng đang trống.")
         return redirect("cart:cart_detail")
 
-    # =============================
     # 1. TÍNH TỔNG TIỀN GỐC
-    # =============================
+    
     raw_total = Decimal("0")
     for item in cart_items:
-        raw_total += item.price * item.quantity
+        raw_total += item.book.get_final_price() * item.quantity
+
 
     shipping_fee = Decimal("15000")
     if raw_total >= 500000:
@@ -41,9 +41,9 @@ def checkout(request):
     promo_discount = Decimal("0")
     final_total = raw_total + shipping_fee
 
-    # =============================
+
     # 2. LẤY VOUCHER CỦA USER
-    # =============================
+    
     user_vouchers = UserVoucher.objects.filter(
         user=request.user,
         used=False,
@@ -52,9 +52,8 @@ def checkout(request):
         voucher__end_date__gte=timezone.now(),
     ).select_related("voucher")
 
-    # =============================
     # 3. POST – THANH TOÁN
-    # =============================
+    
     if request.method == "POST":
         form = CheckoutForm(request.POST, user=request.user)
         if not form.is_valid():
@@ -91,9 +90,9 @@ def checkout(request):
         selected_user_voucher = None
         promo = None
 
-        # =============================
+        
         # 4. ÁP DỤNG VOUCHER
-        # =============================
+        
         if user_voucher_id:
             selected_user_voucher = get_object_or_404(
                 UserVoucher,
@@ -120,9 +119,9 @@ def checkout(request):
             else:
                 promo_discount = voucher.discount_value
 
-        # =============================
+        
         # 5. ÁP DỤNG PROMO CODE (CHỈ KHI KHÔNG CÓ VOUCHER)
-        # =============================
+        
         elif promo_code_input:
             promo = PromoCode.objects.filter(
                 code__iexact=promo_code_input,
@@ -145,16 +144,16 @@ def checkout(request):
             promo_discount = raw_total * Decimal(promo.discount_percent) / 100
             promo_discount += Decimal(promo.discount_amount)
 
-        # =============================
+        
         # 6. TÍNH TIỀN CUỐI
-        # =============================
+
         final_total = raw_total - promo_discount + shipping_fee
         if final_total < 0:
             final_total = Decimal("0")
 
-        # =============================
+        
         # 7. TẠO ORDER
-        # =============================
+        
         with transaction.atomic():
             order = Order.objects.create(
                 user=request.user,
@@ -193,9 +192,8 @@ def checkout(request):
         messages.success(request, "Đặt hàng thành công!")
         return redirect("order:order_history")
 
-    # =============================
+    
     # 8. GET
-    # =============================
     form = CheckoutForm(user=request.user)
     return render(request, "order/checkout.html", {
         "cart": cart,
@@ -232,12 +230,13 @@ def reorder(request, pk):
             cart_item.quantity += order_item.quantity
             cart_item.save()
         else:
-            # Chưa có → tạo mới
+            # Chưa có tthif tạo mới
             CartItem.objects.create(
                 cart=cart,
                 book=order_item.book,
                 quantity=order_item.quantity,
-                price=order_item.price
+                price=order_item.book.get_final_price()
+
             )
 
     messages.success(request, "Đã thêm sản phẩm vào giỏ hàng.")

@@ -11,16 +11,12 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    book = models.ForeignKey('book.Book', on_delete=models.PROTECT)
-    quantity = models.PositiveIntegerField(
-        default=1,
-        validators=[MinValueValidator(1)]
-    )
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    book = models.ForeignKey("book.Book", on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
 
-    class Meta:
-        unique_together = ('cart', 'book')
+    def get_unit_price(self):
+        return self.book.get_final_price()
 
     def get_total_price(self):
-        return self.price * self.quantity
+        return self.get_unit_price() * self.quantity

@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import Avg
+
 from apps.book.models import (
     Category,
     Author,
@@ -10,6 +12,16 @@ from apps.book.models import (
     FavoriteBook,
     RecommendationCache,
 )
+
+
+# cập nhật rating
+
+
+def update_book_average_rating(book):
+    avg = book.reviews.aggregate(avg=Avg("rating"))["avg"]
+    book.average_rating = round(avg or 0, 1)
+    book.save(update_fields=["average_rating"])
+
 
 # =======================
 # Inline
@@ -23,8 +35,10 @@ class BookImageInline(admin.TabularInline):
 class ReviewInline(admin.TabularInline):
     model = Review
     extra = 0
-    readonly_fields = ("user", "rating", "created_at")
-    can_delete = False
+    fields = ("user", "rating", "comment", "created_at")
+    readonly_fields = ("user", "created_at")
+    can_delete = True
+    show_change_link = True
 
 
 # =======================
@@ -37,11 +51,15 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
 
+    #  CHO PHÉP SỬA / XOÁ RÕ RÀNG
+    actions = ["delete_selected"]
+
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
+    actions = ["delete_selected"]
 
 
 @admin.register(Book)
@@ -61,7 +79,9 @@ class BookAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     list_editable = ("price", "sale_price", "stock")
     date_hierarchy = "created_at"
+
     inlines = [BookImageInline, ReviewInline]
+
     readonly_fields = ("average_rating", "created_at", "updated_at")
 
     fieldsets = (
@@ -79,6 +99,9 @@ class BookAdmin(admin.ModelAdmin):
         }),
     )
 
+    # CHO PHÉP XOÁ SÁCH (RÕ RÀNG)
+    actions = ["delete_selected"]
+
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -87,6 +110,22 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ("book__title", "user__username")
     readonly_fields = ("created_at",)
     ordering = ("-created_at",)
+    actions = ["delete_selected"]
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        update_book_average_rating(obj.book)
+
+    def delete_model(self, request, obj):
+        book = obj.book
+        super().delete_model(request, obj)
+        update_book_average_rating(book)
+
+    def delete_queryset(self, request, queryset):
+        books = set(obj.book for obj in queryset)
+        super().delete_queryset(request, queryset)
+        for book in books:
+            update_book_average_rating(book)
 
 
 @admin.register(ProductDiscount)
@@ -100,6 +139,7 @@ class ProductDiscountAdmin(admin.ModelAdmin):
     )
     list_filter = ("is_active",)
     search_fields = ("book__title",)
+    actions = ["delete_selected"]
 
     def get_final_price(self, obj):
         return obj.get_discount_price()
@@ -114,6 +154,7 @@ class BookViewHistoryAdmin(admin.ModelAdmin):
     search_fields = ("user__username", "book__title")
     readonly_fields = ("user", "book", "viewed_at")
     ordering = ("-viewed_at",)
+    actions = ["delete_selected"]
 
 
 @admin.register(FavoriteBook)
@@ -121,6 +162,7 @@ class FavoriteBookAdmin(admin.ModelAdmin):
     list_display = ("user", "book", "created_at")
     search_fields = ("user__username", "book__title")
     readonly_fields = ("created_at",)
+    actions = ["delete_selected"]
 
 
 @admin.register(RecommendationCache)
@@ -129,3 +171,4 @@ class RecommendationCacheAdmin(admin.ModelAdmin):
     list_filter = ("updated_at",)
     search_fields = ("user__username", "book__title")
     ordering = ("-score",)
+    actions = ["delete_selected"]

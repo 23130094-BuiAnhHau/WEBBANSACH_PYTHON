@@ -39,6 +39,26 @@ class Book(models.Model):
 
     def get_display_price(self):
         return self.sale_price if self.sale_price is not None else self.price
+    def get_final_price(self):
+
+        #  Giảm theo chương trình
+        if hasattr(self, "productdiscount") and self.productdiscount.is_active:
+            return self.productdiscount.get_discount_price()
+
+        #  Giảm trực tiếp
+        if self.sale_price is not None and self.sale_price < self.price:
+            return self.sale_price
+
+        #  Giá gốc
+        return self.price
+    
+    @property
+    def has_discount(self):
+        if hasattr(self, "productdiscount") and self.productdiscount.is_active:
+            return True
+        if self.sale_price is not None and self.sale_price < self.price:
+            return True
+        return False
 
 class BookImage(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="images")
