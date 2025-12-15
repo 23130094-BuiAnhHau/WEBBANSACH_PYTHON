@@ -1,6 +1,6 @@
 # apps/book/views.py
 
-from pyexpat.errors import messages
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
@@ -39,9 +39,9 @@ class BookListView(ListView):
         # SORT
         sort = self.request.GET.get("sort")
         if sort == "price_asc":
-            qs = qs.order_by("price")
+            qs = qs.order_by("sale_price", "price")
         elif sort == "price_desc":
-            qs = qs.order_by("-price")
+            qs = qs.order_by("-sale_price", "-price")
         elif sort == "title":
             qs = qs.order_by("title")
         elif sort == "author":

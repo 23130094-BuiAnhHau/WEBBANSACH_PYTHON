@@ -24,7 +24,6 @@ def add_to_cart(request, book_id):
         cart=cart,
         book=book,
         defaults={
-            "price": book.price,
             "quantity": 1
         }
     )

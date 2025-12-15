@@ -13,9 +13,9 @@ from apps.book.models import (
     RecommendationCache,
 )
 
-# =======================
-# Helper: cập nhật rating
-# =======================
+
+# cập nhật rating
+
 
 def update_book_average_rating(book):
     avg = book.reviews.aggregate(avg=Avg("rating"))["avg"]
@@ -51,7 +51,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
 
-    # ✅ CHO PHÉP SỬA / XOÁ RÕ RÀNG
+    #  CHO PHÉP SỬA / XOÁ RÕ RÀNG
     actions = ["delete_selected"]
 
 

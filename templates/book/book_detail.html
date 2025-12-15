@@ -90,36 +90,40 @@
         <a href="{% url 'home:home' %}">Trang chủ</a> &gt;
         <a href="{% url 'book:book_list' %}">Sách</a> &gt;
         <a href="{% url 'book:book_list' %}?category={{ book.category.id }}">
-          {{ book.category.name }}
+        {{ book.category.name }}
         </a>
         &gt;
         <span>{{ book.title }}</span>
-      </div>
+    </div>
 
-      <div class="book-detail">
+    <div class="book-detail">
         <div class="book-main">
-          <div class="book-image">
+            <div class="book-image">
             {% if book.images.first %}
                 <img src="{{ book.images.first.image.url }}" alt="{{ book.title }}">
             {% else %}
                 <img src="https://via.placeholder.com/400x500?text=No+Image" alt="No Image">
             {% endif %}
 
-          </div>
+            </div>
 
-          <div class="book-info">
+        <div class="book-info">
             <h1>{{ book.title }}</h1>
             <div class="book-author">Tác giả: {{ book.author }}</div>
 
             <div class="book-price">
-                {% if book.sale_price and book.sale_price < book.price %}
+                {% if book.has_discount %}
+                    <!-- Giá sau giảm -->
                     <span class="sale-price">
-                        {{ book.sale_price|floatformat:0 }} đ
+                        {{ book.get_final_price()|floatformat:0 }} đ
                     </span>
+
+                    <!-- Giá gốc -->
                     <span class="original-price">
                         {{ book.price|floatformat:0 }} đ
                     </span>
                 {% else %}
+                    <!-- Không giảm -->
                     <span class="normal-price">
                         {{ book.price|floatformat:0 }} đ
                     </span>
