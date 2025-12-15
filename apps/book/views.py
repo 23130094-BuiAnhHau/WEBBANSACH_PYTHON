@@ -1,10 +1,15 @@
 # apps/book/views.py
+from pyexpat.errors import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 
-from apps.book.models import Book, Category
+from apps.book.models import Book, Category, Review
 from apps.book.ai.recommender import BookRecommender
+from apps.order.models import OrderItem
+from django.contrib.auth.decorators import login_required
+from django.db.models import Avg
+
 
 # List view dùng ListView
 class BookListView(ListView):
@@ -64,3 +69,54 @@ def recommend_for_user_view(request):
         return render(request, "book/recommend_user.html", {"suggestions": [], "message": "Bạn cần đăng nhập để xem gợi ý."})
     suggestions = BookRecommender.recommend(request.user, limit=6)
     return render(request, "book/recommend_user.html", {"suggestions": suggestions})
+
+
+def user_has_bought_book(user, book):
+    return OrderItem.objects.filter(
+        order__user=user,
+        order__status="Completed",
+        book=book
+    ).exists()
+
+@login_required
+def add_review_view(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+
+    # Kiểm tra đã mua sách chưa
+    has_bought = OrderItem.objects.filter(
+        order__user=request.user,
+        order__status="Completed",
+        book=book
+    ).exists()
+
+    if not has_bought:
+        messages.error(request, "Bạn chỉ có thể đánh giá sách sau khi đã mua.")
+        return redirect("book:book_detail", pk=book.id)
+
+    #  Kiểm tra đã review chưa
+    if Review.objects.filter(book=book, user=request.user).exists():
+        messages.warning(request, "Bạn đã đánh giá sách này rồi.")
+        return redirect("book:book_detail", pk=book.id)
+
+    #  Xử lý POST
+    if request.method == "POST":
+        rating = int(request.POST.get("rating", 5))
+        comment = request.POST.get("comment", "")
+
+        Review.objects.create(
+            book=book,
+            user=request.user,
+            rating=rating,
+            comment=comment
+        )
+
+        #  Cập nhật average_rating cho Book 
+        avg_rating = book.reviews.aggregate(avg=Avg("rating"))["avg"] or 0
+        book.average_rating = round(avg_rating, 1)
+        book.save(update_fields=["average_rating"])
+
+        messages.success(request, "Đánh giá của bạn đã được ghi nhận.")
+        return redirect("book:book_detail", pk=book.id)
+
+    return render(request, "book/add_review.html", {"book": book})
+
