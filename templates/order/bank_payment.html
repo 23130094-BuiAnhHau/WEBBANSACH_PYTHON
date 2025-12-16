@@ -1,0 +1,16 @@
+<h2>Chuyển khoản ngân hàng</h2>
+
+<p><b>Ngân hàng:</b> {{ bank_name }}</p>
+<p><b>Số tài khoản:</b> {{ account_number }}</p>
+<p><b>Chủ tài khoản:</b> {{ account_name }}</p>
+<p><b>Nội dung:</b> THANHTOAN_{{ order.id }}</p>
+
+<img src="{% static qr_image %}" width="250">
+
+<p style="color:red">
+    Vui lòng chuyển khoản đúng nội dung để hệ thống xác nhận nhanh hơn
+</p>
+
+<a href="{% url 'order:order_detail' order.id %}">
+    Tôi đã chuyển khoản
+</a>

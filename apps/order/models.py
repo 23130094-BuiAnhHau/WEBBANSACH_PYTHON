@@ -119,7 +119,6 @@ class Order(models.Model):
     PAYMENT_CHOICES = [
         ("COD", "Thanh toán khi nhận hàng"),
         ("BANK", "Chuyển khoản ngân hàng"),
-        ("QR", "Chuyển khoản QR"),
     ]
 
     user = models.ForeignKey(

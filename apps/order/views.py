@@ -189,8 +189,8 @@ def checkout(request):
 
             cart_items.delete()
 
-        messages.success(request, "Đặt hàng thành công!")
-        return redirect("order:order_history")
+            messages.success(request, "Đặt hàng thành công!")
+            return redirect("order:process_payment", order_id=order.id)
 
     
     # 8. GET
@@ -203,6 +203,32 @@ def checkout(request):
         "shipping_fee": shipping_fee,
         "final_total": final_total,
         "user_vouchers": user_vouchers,
+    })
+@login_required
+def process_payment(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    # Thanh toán khi nhận hàng
+    if order.payment_method == "COD":
+        order.payment_status = "unpaid"
+        order.status = "confirmed"
+        order.save()
+
+        return redirect("order:order_detail", order.id)
+
+    # Chuyển khoản ngân hàng
+    if order.payment_method == "BANK":
+        return redirect("order:bank_payment", order.id)
+@login_required
+def bank_payment(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    return render(request, "order/bank_payment.html", {
+        "order": order,
+        "bank_name": "Vietcombank",
+        "account_name": "NGUYEN VAN A",
+        "account_number": "0123456789",
+        "qr_image": "images/qr.png",
     })
 
 @login_required
