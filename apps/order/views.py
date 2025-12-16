@@ -252,7 +252,7 @@ def reorder(request, pk):
         ).first()
 
         if cart_item:
-            # Đã có trong cart → cộng số lượng
+            # Đã có trong cart thì cộng số lượng
             cart_item.quantity += order_item.quantity
             cart_item.save()
         else:
