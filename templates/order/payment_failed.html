@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán Thất bại</title>
+
+    <link rel="stylesheet" href="{% static 'order/payment_failed.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+  
+
+</head>
+<body>
+
+<header class="header">
+
+    <div class="header-top">
+        <div class="header-container">
+
+            <a href="{% url 'home:home' %}" class="logo">
+                <div class="logo-text">BookStore</div>
+            </a>
+
+            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                <input
+                        type="text"
+                        name="search"
+                        placeholder="Tìm sách, tác giả, thể loại..."
+                        value="{{ request.GET.search|default:'' }}"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <div class="header-actions">
+                {% if user.is_authenticated %}
+                <span class="hello-user">
+                        Xin chào, <b>{{ user.username }}</b>
+                    </span>
+
+                <form action="{% url 'user:logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="login-btn logout-btn">
+                        Đăng xuất
+                    </button>
+                </form>
+
+                {% else %}
+                <a href="{% url 'user:login' %}" class="login-btn">
+                    Đăng nhập
+                </a>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_detail' %}" class="cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Giỏ hàng
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="header-bottom">
+        <nav class="nav-links">
+            <a href="{% url 'home:home' %}">Trang chủ</a>
+            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+    </div>
+
+</header>
+
+
+<div class="confirmation-container">
+
+    <div class="card failed-card">
+        <i class="fa-solid fa-circle-xmark"></i>
+        <h1>THANH TOÁN THẤT BẠI!</h1>
+        <p>Rất tiếc, giao dịch của bạn không thành công. Vui lòng kiểm tra lại thông tin hoặc thử phương thức thanh toán khác.</p>
+        <p>Mã đơn hàng tạm thời: <strong>#DH{{ order.id }}</strong></p>
+        <p class="error-message">Lý do: **{{ order.failure_reason|default:"Thẻ không hợp lệ hoặc lỗi kết nối cổng thanh toán." }}**</p>
+
+        <div class="confirmation-actions">
+            <a href="{% url 'order:checkout_retry' pk=order.id %}" class="order-btn primary-failed-btn">
+                Thử lại Thanh toán
+            </a>
+            <a href="{% url 'cart:cart_detail' %}" class="order-btn secondary-btn">
+                Quay lại Giỏ hàng
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Tóm tắt đơn hàng</h2>
+
+        <div class="summary-details">
+            <div class="detail-row">
+                <strong>Ngày đặt:</strong>
+                <span>{{ order.created_at|date:"d/m/Y" }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Phương thức thanh toán đã thử:</strong>
+                <span>{{ order.get_payment_method_display }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Địa chỉ giao hàng:</strong>
+                <span>{{ order.shipping_address }}</span>
+            </div>
+        </div>
+
+        <div class="summary-row">
+            <span>Tạm tính</span>
+            <span>{{ raw_total|floatformat:0 }}₫</span>
+        </div>
+
+        <div class="summary-row">
+            <span>Phí vận chuyển</span>
+            <span>{{ order.shipping_fee|default:15000|floatformat:0 }}₫</span>
+        </div>
+
+        <div class="summary-row discount-row">
+            <span>Giảm giá (Voucher/Promo)</span>
+            <span>- {{ order.discount_amount|default:0|floatformat:0 }}₫</span>
+        </div>
+
+        <div class="summary-row total">
+            <strong>TỔNG THANH TOÁN:</strong>
+            <strong>{{ final_total|floatformat:0 }}₫</strong>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Sản phẩm đã đặt</h3>
+        {% for item in order.items.all %}
+        <div class="product">
+            <img src="{% if item.book.images.first %}
+                                {{ item.book.images.first.image.url }}
+                             {% else %}
+                                https://via.placeholder.com/60
+                             {% endif %}"
+                 class="product-img">
+
+            <div class="product-right">
+                <p class="product-title">{{ item.book.title }}</p>
+                <div class="product-bottom">
+                    <p class="price">
+                        {{ item.price|floatformat:0 }}₫
+                    </p>
+                    <span>x {{ item.quantity }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>BookStore</h3>
+                <p class="footer-text">
+                    Địa chỉ: <br>
+                    Điện thoại:
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Danh mục</h3>
+                <ul>
+                    {% for c in categories|slice:":4" %}
+                    <li>
+                        <a href="{% url 'book:book_list' %}?category={{ c.id }}">
+                            {{ c.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+
+                    <li>
+                        <a href="{% url 'book:recommend_user' %}">
+                            🤖 Gợi ý cho bạn
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'book:book_list' %}">
+                            📚 Tất cả sách
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="footer-section">
+                <h3>Hỗ trợ</h3>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                    <li><a href="#">Chính sách vận chuyển</a></li>
+                    <li><a href="#">Chính sách hoàn trả</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Kết nối</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="copyright">© 2024 BookStore</p>
+    </div>
+</footer>
+
+</body>
+</html>
