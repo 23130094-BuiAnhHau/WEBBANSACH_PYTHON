@@ -57,7 +57,7 @@ input.readonly {
     justify-content: space-between;
     align-items: center;
 
-    border: 2px solid #000; /* Thay đổi màu border để dễ nhìn hơn */
+    border: 2px solid #000; 
     border-radius: 14px;
     padding: 14px 16px;
     cursor: pointer;
@@ -74,24 +74,24 @@ input.readonly {
     height: 18px;
     margin: 0;
 }
-/* --- Bổ sung vào static/css/checkout.css --- */
+
 
 .ship-empty input {
-    /* Đảm bảo nó không có border màu đen như input thông thường */
+    
     border: 1px solid #ddd; 
-    background-color: #f8f8f8; /* Màu nền nhẹ hơn */
-    color: #888; /* Màu chữ mờ */
-    text-align: start; /* Căn giữa chữ */
-    height: 50px; /* Chiều cao cố định */
+    background-color: #f8f8f8; 
+    color: #888; 
+    text-align: start; 
+    height: 50px; 
     font-size: 15px;
-    cursor: default; /* Không cho người dùng gõ vào */
+    cursor: default; 
 }
 
-/* Quan trọng: Loại bỏ margin-bottom mặc định của input trong khối này */
+
 .ship-empty input {
     margin-bottom: 0;
 }
-/* ===== PHƯƠNG THỨC THANH TOÁN ===== */
+
 .pay-item {
     display: flex;
     align-items: center;
@@ -101,8 +101,10 @@ input.readonly {
 }
 
 .pay-item:first-of-type {
-    border-top: none; /* Bỏ border trên đầu tiên */
+    border-top: none;
+    padding-top: 0;
 }
+
 
 .pay-left {
     display: flex;
@@ -142,7 +144,7 @@ input.readonly {
     margin-left: 5px;
 }
 
-/* GIỎ HÀNG */
+
 .product {
     display: flex;
     align-items: flex-start;
@@ -178,7 +180,7 @@ input.readonly {
     font-weight: 500;
     margin: 0;
     flex: 1;
-    /* Thiết lập cho text ellipsis */
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -247,7 +249,7 @@ input.readonly {
     font-size: 10px;
 }
 
-/* KHUYẾN MÃI */
+
 .coupon-select {
     border: 1px solid #ccc;
     padding: 10px;
@@ -272,7 +274,7 @@ input.readonly {
 .coupon-input button {
     width: 100%;
     height: 45px;
-    margin-bottom: 0; /* Bỏ margin-bottom */
+    margin-bottom: 0; 
 }
 
 .coupon-input button {
@@ -295,7 +297,7 @@ input.readonly {
     font-weight: bold;
     font-size: 18px;
     padding-top: 10px;
-    border-top: 1px dashed #ccc; /* Thêm đường kẻ trên */
+    border-top: 1px dashed #ccc; 
 }
 
 .order-btn {
