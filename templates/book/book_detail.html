@@ -115,7 +115,7 @@
                 {% if book.has_discount %}
                     <!-- Giá sau giảm -->
                     <span class="sale-price">
-                        {{ book.get_final_price()|floatformat:0 }} đ
+                        {{ book.get_final_price|floatformat:0 }} đ
                     </span>
 
                     <!-- Giá gốc -->
