@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng</title>
+    <link rel="stylesheet" href="{% static 'cart/cart_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<header class="header">
+
+    <!-- TOP BAR -->
+    <div class="header-top">
+        <div class="header-container">
+
+            <!-- LOGO -->
+            <a href="{% url 'home:home' %}" class="logo">
+                <div class="logo-text">BookStore</div>
+            </a>
+
+            <!-- SEARCH -->
+            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Tìm sách, tác giả, thể loại..."
+                    value="{{ request.GET.search|default:'' }}"
+                >
+                <button type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <!-- ACTIONS -->
+            <div class="header-actions">
+
+                {% if user.is_authenticated %}
+                    <span class="hello-user">
+                        Xin chào, <b>{{ user.username }}</b>
+                    </span>
+
+                    <!-- LOGOUT (POST) -->
+                    <form action="{% url 'user:logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="login-btn logout-btn">
+                            Đăng xuất
+                        </button>
+                    </form>
+
+                {% else %}
+                    <a href="{% url 'user:login' %}" class="login-btn">
+                        Đăng nhập
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTTOM MENU -->
+    <div class="header-bottom">
+        <nav class="nav-links">
+            <a href="{% url 'home:home' %}">Trang chủ</a>
+            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
+            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
+            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
+        </nav>
+    </div>
+
+</header>
+
+<main class="cart-page">
+
+    <h1>🛒 Giỏ hàng</h1>
+
+    {% if cart.items.exists %}
+    <div class="cart-layout">
+
+        <!-- DANH SÁCH -->
+        <div class="cart-list">
+
+            <label class="check-all">
+                <input type="checkbox" id="check-all" checked>
+                Chọn tất cả
+            </label>
+
+            {% for item in cart.items.all %}
+            <div class="cart-item">
+
+                <input type="checkbox"
+                       class="item-check"
+                       data-price="{{ item.get_total_price }}"
+                       checked>
+
+                <div class="item-image">
+                    {% if item.book.images.first %}
+                        <img src="{{ item.book.images.first.image.url }}">
+                    {% else %}
+                        <img src="{% static 'images/no-book.png' %}">
+                    {% endif %}
+                </div>
+
+                <div class="item-info">
+                    <h3>{{ item.book.title }}</h3>
+                    <p>Tác giả: {{ item.book.author.name }}</p>
+                    <p class="price">
+                        {{ item.book.get_final_price|floatformat:0 }} ₫
+                    </p>
+                </div>
+
+                <div class="item-actions">
+                    <div class="qty">
+                        <form method="post" action="{% url 'cart:decrease_quantity' item.id %}">
+                            {% csrf_token %}
+                            <button>-</button>
+                        </form>
+
+                        <span>{{ item.quantity }}</span>
+
+                        <form method="post" action="{% url 'cart:add_to_cart' item.book.id %}">
+                            {% csrf_token %}
+                            <button>+</button>
+                        </form>
+                    </div>
+
+                    <div class="total">
+                        {{ item.get_total_price|floatformat:0 }} ₫
+                    </div>
+
+                    <form method="post" action="{% url 'cart:remove_from_cart' item.id %}">
+                        {% csrf_token %}
+                        <button class="remove">Xóa</button>
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- TỔNG TIỀN -->
+        <div class="cart-summary">
+            <h2>Thanh toán</h2>
+
+            <div class="row">
+                <span>Tổng tiền</span>
+                <span id="selected-total">0 ₫</span>
+            </div>
+
+            <a href="{% url 'order:checkout' %}" class="checkout-btn">
+                Tiến hành đặt hàng
+            </a>
+        </div>
+
+    </div>
+    {% else %}
+        <p class="empty">Giỏ hàng trống</p>
+    {% endif %}
+
+</main>
+
+<script>
+function format(n){
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ' ₫';
+}
+function calc(){
+    let total = 0;
+    document.querySelectorAll('.item-check:checked').forEach(cb=>{
+        total += parseInt(cb.dataset.price);
+    });
+    document.getElementById('selected-total').innerText = format(total);
+}
+document.querySelectorAll('.item-check').forEach(cb=>{
+    cb.addEventListener('change',calc);
+});
+document.getElementById('check-all').addEventListener('change',e=>{
+    document.querySelectorAll('.item-check').forEach(cb=>{
+        cb.checked = e.target.checked;
+    });
+    calc();
+});
+calc();
+</script>
+
+</body>
+</html>

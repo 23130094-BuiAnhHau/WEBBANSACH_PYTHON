@@ -85,6 +85,14 @@
     </div>
 </section>
 
+
+<section class="hero small">
+    <div class="hero-container">
+        <h1>📚 Sách tương tự</h1>
+        <p>Dựa trên tác giả và thể loại</p>
+    </div>
+</section>
+
 <section class="content">
     <div class="container">
 
@@ -93,33 +101,43 @@
         </h2>
 
         {% if suggestions %}
-            <div class="book-grid">
-                {% for item in suggestions %}
-                    <div class="book-card">
-                        <a href="{% url 'book:detail' item.pk %}">
-                            <div class="book-image">
-                                {% if item.images.first %}
-                                    <img src="{{ item.images.first.image.url }}">
-                                {% else %}
-                                    <img src="{% static 'images/no-book.png' %}">
-                                {% endif %}
-                            </div>
-                        </a>
+        <div class="book-grid">
+            {% for item in suggestions %}
+            <div class="book-card">
 
-                        <div class="book-info">
-                            <h3>{{ item.title }}</h3>
-                            {% if item.author %}
-                                <p class="author">{{ item.author.name }}</p>
-                            {% endif %}
-                            <p class="price">{{ item.get_display_price|floatformat:0 }} đ</p>
-                            <p class="rating">⭐ {{ item.average_rating|default:"Chưa có" }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
+                <!-- ✅ SỬA: đưa class book-image lên thẻ a -->
+                <a href="{% url 'book:book_detail' item.pk %}" class="book-image">
+                    {% if item.images.first %}
+                        <img src="{{ item.images.first.image.url }}" alt="{{ item.title }}">
+                    {% else %}
+                        <img src="{% static 'images/no-book.png' %}" alt="No image">
+                    {% endif %}
+                </a>
+
+                <div class="book-info">
+                    <h3 class="book-title">{{ item.title }}</h3>
+
+                    {% if item.author %}
+                        <p class="author">{{ item.author.name }}</p>
+                    {% endif %}
+
+                    <!-- ✅ GIỮ NGUYÊN LOGIC, CHỈ ĐỔI CLASS -->
+                    <p class="price">
+                        {{ item.get_display_price|floatformat:0 }} đ
+                    </p>
+
+                    <p class="rating">
+                        ⭐ {{ item.average_rating|default:"Chưa có" }}
+                    </p>
+                </div>
+
             </div>
+            {% endfor %}
+        </div>
         {% else %}
             <p class="empty">Không tìm thấy sách tương tự.</p>
         {% endif %}
+
     </div>
 </section>
 <!-- FOOTER -->

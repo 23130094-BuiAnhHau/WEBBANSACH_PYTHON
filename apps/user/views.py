@@ -18,6 +18,19 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, "user/register.html", {"form": form})
+def register_view(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Đăng ký thành công! Mời bạn đăng nhập.")
+            return redirect("user:login")
+        else:
+            messages.error(request, "Đăng ký không thành công. Vui lòng kiểm tra lại thông tin.")
+    else:
+        form = RegisterForm()
+
+    return render(request, "user/register.html", {"form": form})
 
 # --- Đăng nhập ---
 def login_view(request):
@@ -28,7 +41,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("home:home")  # 👉 về home sau login
+            return redirect("home:home")  
         else:
             messages.error(request, "Sai tên đăng nhập hoặc mật khẩu")
 
