@@ -10,6 +10,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        db_table = 'category'
+        managed = False
 
 class Author(models.Model):
     name = models.CharField(max_length=255)
@@ -17,6 +21,10 @@ class Author(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        db_table = 'author'
+        managed = False
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
@@ -59,6 +67,10 @@ class Book(models.Model):
         if self.sale_price is not None and self.sale_price < self.price:
             return True
         return False
+    
+    class Meta:
+        db_table = 'book'
+        managed = False
 
 class BookImage(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="images")
@@ -66,6 +78,10 @@ class BookImage(models.Model):
 
     def __str__(self):
         return f"Hình của {self.book.title}"
+    
+    class Meta:
+        db_table = 'book_image'
+        managed = False
 
 class Review(models.Model):
     # Dùng Review làm rating + comment; 1 user chỉ review 1 sách
@@ -78,6 +94,8 @@ class Review(models.Model):
     class Meta:
         unique_together = ("book", "user")
         ordering = ["-created_at"]
+        db_table = 'review'
+        managed = False
 
     def __str__(self):
         return f"Review {self.rating} sao - {self.book.title}"
@@ -96,6 +114,9 @@ class ProductDiscount(models.Model):
         if self.discount_percent > 0:
             return price - price * (self.discount_percent / 100)
         return price - self.discount_amount
+    class Meta:
+        db_table = 'product_discount'
+        managed = False
 
 # LƯU LỊCH SỬ XEM SÁCH (dùng cho AI)
 class BookViewHistory(models.Model):
@@ -105,6 +126,8 @@ class BookViewHistory(models.Model):
 
     class Meta:
         ordering = ["-viewed_at"]
+        db_table = 'book_view_history'
+        managed = False
 
 # Yêu thích / wishlist
 class FavoriteBook(models.Model):
@@ -114,6 +137,8 @@ class FavoriteBook(models.Model):
 
     class Meta:
         unique_together = ("user", "book")
+        db_table = 'favorite_book'
+        managed = False
 
 # Cache gợi ý (nếu muốn persist score)
 class RecommendationCache(models.Model):
@@ -124,3 +149,5 @@ class RecommendationCache(models.Model):
 
     class Meta:
         ordering = ["-score"]
+        db_table = 'recommendation_cache'
+        managed = False

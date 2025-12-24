@@ -20,6 +20,9 @@ class Promotion(models.Model):
     def __str__(self):
         return f"{self.code} ({self.discount_percent}%)"
 
+    class Meta:
+        db_table = 'promotion'
+        managed = False
 
 # ======================================================
 # 2 Voucher – PHIẾU GIẢM GIÁ (ADMIN TẠO)
@@ -69,6 +72,9 @@ class Voucher(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        db_table = 'voucher'
+        managed = False
 
 # ======================================================
 # 3 UserVoucher – VÍ GIẢM GIÁ CỦA USER
@@ -96,11 +102,11 @@ class UserVoucher(models.Model):
 
     class Meta:
         unique_together = ("user", "voucher")
+        db_table = 'user_voucher'
+        managed = False
 
     def __str__(self):
         return f"{self.user.username} - {self.voucher.name}"
-
-
 
 # 4 Order – ĐƠN HÀNG
 
@@ -172,6 +178,9 @@ class Order(models.Model):
     def __str__(self):
         return f"Order #{self.id} - {self.user.username}"
 
+    class Meta:
+        db_table = 'order'
+        managed = False
 
 # ======================================================
 # 5 OrderItem – CHI TIẾT SẢN PHẨM
@@ -202,6 +211,9 @@ class OrderItem(models.Model):
     def get_total_price(self):
         return (self.price or Decimal('0.00')) * self.quantity
 
+    class Meta:
+        db_table = 'order_item'
+        managed = False
 
 # ======================================================
 # 6 RecommendationEngine – GỢI Ý SẢN PHẨM
@@ -232,6 +244,9 @@ class RecommendationEngine(models.Model):
         bought_ids = self.order_history.values_list('id', flat=True)
         return Book.objects.exclude(id__in=bought_ids)[:top_k]
 
+    class Meta:
+        db_table = 'recommendation_engine'
+        managed = False
 
 # ======================================================
 # 7 PromoCode – NHẬP MÃ BẰNG TAY
@@ -252,3 +267,7 @@ class PromoCode(models.Model):
 
     def __str__(self):
         return self.code
+    
+    class Meta:
+        db_table = 'promo_code'
+        managed = False

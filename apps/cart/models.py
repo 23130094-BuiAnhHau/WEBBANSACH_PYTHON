@@ -9,6 +9,9 @@ class Cart(models.Model):
     def total_price(self):
         return sum(item.get_total_price() for item in self.items.all())
 
+    class Meta:
+        db_table = 'cart'
+        managed = False
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
@@ -25,3 +28,7 @@ class CartItem(models.Model):
 
     def get_total_price(self):
         return self.get_unit_price() * self.quantity
+
+    class Meta:
+        db_table = 'cart_item'
+        managed = False

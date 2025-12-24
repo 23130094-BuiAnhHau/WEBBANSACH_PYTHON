@@ -18,6 +18,9 @@ class User(AbstractUser):
     def is_admin_user(self):
         return self.role == 'admin'
 
+    class Meta:
+        db_table = 'user'
+        managed = False
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
@@ -33,6 +36,9 @@ class Profile(models.Model):
     def __str__(self):
         return f"Hồ sơ {self.user.username}"
 
+    class Meta:
+        db_table = 'profile'
+        managed = False
 
 # Khuyến mãi theo khách hàng
 class CustomerPromotion(models.Model):
@@ -56,3 +62,7 @@ class CustomerPromotion(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.promo_type} ({self.discount_percent}%)"
+
+    class Meta:
+        db_table = 'customer_promotion'
+        managed = False
