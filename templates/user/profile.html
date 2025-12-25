@@ -1,0 +1,89 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tài khoản của tôi</title>
+
+    <link rel="stylesheet" href="{% static 'user/profile.css' %}">
+    
+</head>
+<body>
+
+<div class="account-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="avatar-box">
+            {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}">
+            {% else %}
+            <img src="{% static 'images/default-avatar.png' %}">
+            {% endif %}
+            <h4>{{ user.username }}</h4>
+        </div>
+
+        <ul>
+            <li class="active">👤 Hồ sơ</li>
+            <li><a href="{% url 'order: order_history' %}">📦 Đơn hàng</a></li>
+            <li><a href="{% url 'my_promotions' %}">🎟 Mã giảm giá</a></li>
+            <li><a href="{% url 'change_password' %}">🔒 Đổi mật khẩu</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="content">
+        <h2>Thông tin tài khoản</h2>
+
+        <form class="profile-form">
+            <div class="form-group">
+                <label>Tên đăng nhập</label>
+                <input type="text" value="{{ user.username }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" value="{{ user.email }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" value="{{ user.phone|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label>Địa chỉ</label>
+                <input type="text" value="{{ user.address|default:'' }}">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ngày sinh</label>
+                    <input type="date" value="{{ user.profile.date_of_birth|date:'Y-m-d' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Giới tính</label>
+                    <select>
+                        <option value="">-- Chọn --</option>
+                        <option {% if user.profile.gender =='Nam' %}selected{% endif %}>Nam</option>
+                        <option {% if user.profile.gender =='Nữ' %}selected{% endif %}>Nữ</option>
+                        <option {% if user.profile.gender =='Khác' %}selected{% endif %}>Khác</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit">💾 Lưu thay đổi</button>
+                <a href="{% url 'my_promotions' %}" class="promo-btn">
+                    🎟 Xem mã giảm giá của tôi
+                </a>
+            </div>
+        </form>
+    </main>
+
+</div>
+
+</body>
+</html>
