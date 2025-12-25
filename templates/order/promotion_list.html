@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Mã giảm giá của tôi</title>
+    <link rel="stylesheet" href="{% static 'user/promotion.css' %}">
+</head>
+<body>
+
+<div class="promo-container">
+    <h2>🎟 Mã giảm giá của tôi</h2>
+
+    {% if promotions %}
+        <div class="promo-list">
+            {% for promo in promotions %}
+                <div class="promo-card {% if not promo.is_valid %}expired{% endif %}">
+                    
+                    <div class="promo-left">
+                        <span class="discount">{{ promo.discount_percent }}%</span>
+                        <span class="type">{{ promo.get_promo_type_display }}</span>
+                    </div>
+
+                    <div class="promo-right">
+                        <p>
+                            Áp dụng từ
+                            <strong>{{ promo.start_date|date:"d/m/Y" }}</strong>
+                            đến
+                            <strong>{{ promo.end_date|date:"d/m/Y" }}</strong>
+                        </p>
+
+                        {% if promo.is_valid %}
+                            <span class="status active">✔ Còn hiệu lực</span>
+
+                            
+                            <form method="post" action="{% url 'order:apply_promotion' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="promo_id" value="{{ promo.id }}">
+                                <button type="submit" class="use-btn">
+                                    Dùng mã
+                                </button>
+                            </form>
+
+                        {% else %}
+                            <span class="status expired">✖ Hết hạn</span>
+
+                            <button class="use-btn disabled" disabled>
+                                 Không khả dụng
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty">Bạn chưa có mã giảm giá nào.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
