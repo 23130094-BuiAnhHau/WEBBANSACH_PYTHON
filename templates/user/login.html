@@ -3,58 +3,90 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng nhập tài khoản</title>
+    <title>BookStore - Đăng nhập</title>
+
+    
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
+
     <link rel="stylesheet" href="{% static 'user/login.css' %}">
 </head>
 <body>
 
-<div class="login-wrapper">
-    <div class="login-box">
-        <h2 class="title">ĐĂNG NHẬP</h2>
+<!-- HEADER -->
+{% include "base/header.html" %}
 
-        <!-- Hiển thị thông báo lỗi -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+<!-- MAIN -->
+<main class="main-content">
 
-        <!-- Đăng nhập MXH (chỉ giao diện) -->
-        <div class="social-login">
-            <button class="btn facebook">Facebook</button>
-            <button class="btn google">Google</button>
-        </div>
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h2 class="title">ĐĂNG NHẬP</h2>
 
-        <div class="or">HOẶC</div>
-
-        <!-- Form đăng nhập -->
-        <form method="post">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Tên đăng nhập hoặc Email" required>
+            <!-- Hiển thị thông báo -->
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert error">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <div class="social-login">
+                <button class="btn facebook">Facebook</button>
+                <button class="btn google">Google</button>
             </div>
 
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Mật khẩu" required>
+            <div class="or">HOẶC</div>
+
+            <!-- Form đăng nhập -->
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Tên đăng nhập hoặc Email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Mật khẩu"
+                        required
+                    >
+                </div>
+
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox"> Ghi nhớ đăng nhập
+                    </label>
+                    <a href="#" class="forgot">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Đăng nhập
+                </button>
+            </form>
+
+            <div class="register">
+                Chưa có tài khoản?
+                <a href="{% url 'user:register' %}">
+                    Đăng ký ngay
+                </a>
             </div>
-
-            <div class="form-options">
-                <label>
-                    <input type="checkbox"> Ghi nhớ đăng nhập
-                </label>
-                <a href="#" class="forgot">Quên mật khẩu?</a>
-            </div>
-
-            <button type="submit" class="btn-login">Đăng nhập</button>
-        </form>
-
-        <div class="register">
-            Chưa có tài khoản?
-            <a href="{% url 'user:register' %}">Đăng ký ngay</a>
         </div>
     </div>
-</div>
+
+</main>
+
+<!-- FOOTER -->
+{% include "base/footer.html" %}
 
 </body>
 </html>

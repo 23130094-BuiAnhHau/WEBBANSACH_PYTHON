@@ -1,89 +1,123 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Tài khoản của tôi</title>
+    <title>BookStore - Thông tin tài khoản</title>
 
+    <!-- CSS dùng chung giống HOME -->
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
+
+    <!-- CSS riêng profile -->
     <link rel="stylesheet" href="{% static 'user/profile.css' %}">
-    
 </head>
 <body>
 
-<div class="account-wrapper">
+<!-- HEADER -->
+{% include "base/header.html" %}
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="avatar-box">
-            {% if user.profile.avatar %}
-            <img src="{{ user.profile.avatar.url }}">
-            {% else %}
-            <img src="{% static 'images/default-avatar.png' %}">
-            {% endif %}
-            <h4>{{ user.username }}</h4>
-        </div>
+<!-- MAIN -->
+<main class="main-content">
 
-        <ul>
-            <li class="active">👤 Hồ sơ</li>
-            <li><a href="{% url 'order: order_history' %}">📦 Đơn hàng</a></li>
-            <li><a href="{% url 'my_promotions' %}">🎟 Mã giảm giá</a></li>
-            <li><a href="{% url 'change_password' %}">🔒 Đổi mật khẩu</a></li>
-        </ul>
-    </aside>
+    <div class="profile-container">
 
-    <!-- Main -->
-    <main class="content">
-        <h2>Thông tin tài khoản</h2>
-
-        <form class="profile-form">
-            <div class="form-group">
-                <label>Tên đăng nhập</label>
-                <input type="text" value="{{ user.username }}" disabled>
+        <!-- SIDEBAR -->
+        <aside class="profile-sidebar">
+            <div class="avatar-box">
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="Avatar">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.png' %}" alt="Avatar">
+                {% endif %}
+                <h4>{{ user.username }}</h4>
             </div>
 
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" value="{{ user.email }}" disabled>
-            </div>
+            <ul class="menu">
+                <li class="active">👤 Hồ sơ</li>
+                <li>
+                    <a href="{% url 'order:order_history' %}">📦 Đơn hàng</a>
+                </li>
+                <li>
+                    <a href="{% url 'order:promotion_list' %}">🎟 Mã giảm giá</a>
+                </li>
+                <li>
+                    <a href="{% url 'user:change_password' %}">🔒 Đổi mật khẩu</a>
+                </li>
+            </ul>
+        </aside>
 
-            <div class="form-group">
-                <label>Số điện thoại</label>
-                <input type="text" value="{{ user.phone|default:'' }}">
-            </div>
+        <!-- CONTENT -->
+        <section class="profile-content">
+            <h2>Thông tin tài khoản</h2>
 
-            <div class="form-group">
-                <label>Địa chỉ</label>
-                <input type="text" value="{{ user.address|default:'' }}">
-            </div>
+            <form class="profile-form" method="post">
+                {% csrf_token %}
 
-            <div class="form-row">
                 <div class="form-group">
-                    <label>Ngày sinh</label>
-                    <input type="date" value="{{ user.profile.date_of_birth|date:'Y-m-d' }}">
+                    <label>Tên đăng nhập</label>
+                    <input type="text" value="{{ user.username }}" disabled>
                 </div>
 
                 <div class="form-group">
-                    <label>Giới tính</label>
-                    <select>
-                        <option value="">-- Chọn --</option>
-                        <option {% if user.profile.gender =='Nam' %}selected{% endif %}>Nam</option>
-                        <option {% if user.profile.gender =='Nữ' %}selected{% endif %}>Nữ</option>
-                        <option {% if user.profile.gender =='Khác' %}selected{% endif %}>Khác</option>
-                    </select>
+                    <label>Email</label>
+                    <input type="email" value="{{ user.email }}" disabled>
                 </div>
-            </div>
 
-            <div class="form-actions">
-                <button type="submit">💾 Lưu thay đổi</button>
-                <a href="{% url 'my_promotions' %}" class="promo-btn">
-                    🎟 Xem mã giảm giá của tôi
-                </a>
-            </div>
-        </form>
-    </main>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input
+                        type="text"
+                        name="phone"
+                        value="{{ user.phone|default:'' }}"
+                    >
+                </div>
 
-</div>
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input
+                        type="text"
+                        name="address"
+                        value="{{ user.address|default:'' }}"
+                    >
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ngày sinh</label>
+                        <input
+                            type="date"
+                            name="date_of_birth"
+                            value="{{ user.profile.date_of_birth|date:'Y-m-d' }}"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giới tính</label>
+                        <select name="gender">
+                            <option value="">-- Chọn --</option>
+                            <option value="Nam" {% if user.profile.gender == "Nam" %}selected{% endif %}>Nam</option>
+                            <option value="Nữ" {% if user.profile.gender == "Nữ" %}selected{% endif %}>Nữ</option>
+                            <option value="Khác" {% if user.profile.gender == "Khác" %}selected{% endif %}>Khác</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit">💾 Lưu thay đổi</button>
+                    <a href="{% url 'order:promotion_list' %}" class="promo-btn">
+                        🎟 Xem mã giảm giá
+                    </a>
+                </div>
+            </form>
+        </section>
+
+    </div>
+
+</main>
+
+<!-- FOOTER -->
+{% include "base/footer.html" %}
 
 </body>
 </html>

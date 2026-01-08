@@ -6,7 +6,7 @@ from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.db.models import Count
 
-from apps.book.models import Book, Category, Review
+from apps.book.models import Book, BookViewHistory, Category, FavoriteBook, Review
 from apps.book.ai.recommender import BookRecommender
 from apps.order.models import OrderItem
 from django.contrib.auth.decorators import login_required
@@ -66,30 +66,70 @@ class BookListView(ListView):
         return ctx
 
 
-# Detail view
 class BookDetailView(DetailView):
     model = Book
     template_name = "book/book_detail.html"
     context_object_name = "book"
 
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+
+        if request.user.is_authenticated:
+            BookViewHistory.objects.create(
+                user=request.user,
+                book=self.object
+            )
+        return response
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        book = self.object
-        # Gợi ý tương tự bằng recommender
-        ctx["similar_books"] = BookRecommender.similar_books(book, limit=6)
+
+        # sách tương tự
+        ctx["similar_books"] = BookRecommender.similar_books(self.object, limit=6)
+
+        # Kiểm tra đã yêu thích chưa
+        if self.request.user.is_authenticated:
+            ctx["is_favorite"] = FavoriteBook.objects.filter(
+                user=self.request.user,
+                book=self.object
+            ).exists()
+        else:
+            ctx["is_favorite"] = False
+
         return ctx
 
-# Function view: similar (direct)
+
+@login_required
+def toggle_favorite(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+
+    favorite = FavoriteBook.objects.filter(
+        user=request.user,
+        book=book
+    ).first()
+
+    if favorite:
+        favorite.delete()
+        messages.info(request, "Đã bỏ khỏi yêu thích.")
+    else:
+        FavoriteBook.objects.create(
+            user=request.user,
+            book=book
+        )
+        messages.success(request, "Đã thêm vào yêu thích.")
+
+    return redirect("book:book_detail", pk=book.id)
+
 def similar_books_view(request, pk):
     book = get_object_or_404(Book, pk=pk)
-    suggestions = BookRecommender.similar_books(book, limit=12)
+    suggestions = BookRecommender.similar_books(book, limit=50)
     return render(request, "book/similar_books.html", {"book": book, "suggestions": suggestions})
 
 # Gợi ý cho user
 def recommend_for_user_view(request):
     if not request.user.is_authenticated:
         return render(request, "book/recommend_user.html", {"suggestions": [], "message": "Bạn cần đăng nhập để xem gợi ý."})
-    suggestions = BookRecommender.recommend(request.user, limit=6)
+    suggestions = BookRecommender.recommend(request.user, limit=50)
     return render(request, "book/recommend_user.html", {"suggestions": suggestions})
 
 
@@ -115,12 +155,10 @@ def add_review_view(request, book_id):
         messages.error(request, "Bạn chỉ có thể đánh giá sách sau khi đã mua.")
         return redirect("book:book_detail", pk=book.id)
 
-    #  Kiểm tra đã review chưa
     if Review.objects.filter(book=book, user=request.user).exists():
         messages.warning(request, "Bạn đã đánh giá sách này rồi.")
         return redirect("book:book_detail", pk=book.id)
 
-    #  Xử lý POST
     if request.method == "POST":
         rating = int(request.POST.get("rating", 5))
         comment = request.POST.get("comment", "")
@@ -132,13 +170,13 @@ def add_review_view(request, book_id):
             comment=comment
         )
 
-        #  Cập nhật average_rating cho Book 
+        #  Cập nhật average_rating cho Book
         avg_rating = book.reviews.aggregate(avg=Avg("rating"))["avg"] or 0
         book.average_rating = round(avg_rating, 1)
         book.save(update_fields=["average_rating"])
 
         messages.success(request, "Đánh giá của bạn đã được ghi nhận.")
-        return redirect("book:book_detail", pk=book.id)
+        return redirect("book:book_detail", pk=book.pk)
 
     return render(request, "book/add_review.html", {"book": book})
 

@@ -1,4 +1,5 @@
 # apps/book/models.py
+from decimal import Decimal
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -32,13 +33,17 @@ class Book(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    average_rating = models.FloatField(default=0)  # Cache để hiển thị nhanh (cập nhật khi có review)
+    average_rating = models.FloatField(default=0)  
 
     def __str__(self):
         return self.title
 
     def get_display_price(self):
         return self.sale_price if self.sale_price is not None else self.price
+
+    def get_display_price_formatted(self):
+        price = self.get_display_price()
+        return f"{price:,.0f}".replace(",", ".")
     def get_final_price(self):
 
         #  Giảm theo chương trình
@@ -51,7 +56,9 @@ class Book(models.Model):
 
         #  Giá gốc
         return self.price
-    
+    def get_final_price_formatted(self):
+        price = self.get_final_price()
+        return f"{price:,.0f}".replace(",", ".")
     @property
     def has_discount(self):
         if hasattr(self, "productdiscount") and self.productdiscount.is_active:
@@ -62,7 +69,8 @@ class Book(models.Model):
 
 class BookImage(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="book_images/")
+    image = models.URLField(max_length=1000)
+
 
     def __str__(self):
         return f"Hình của {self.book.title}"
@@ -71,7 +79,7 @@ class Review(models.Model):
     # Dùng Review làm rating + comment; 1 user chỉ review 1 sách
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="reviews")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
-    rating = models.PositiveSmallIntegerField(default=5)  # 1–5
+    rating = models.PositiveSmallIntegerField(default=5) 
     comment = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -94,10 +102,10 @@ class ProductDiscount(models.Model):
         """
         price = self.book.price
         if self.discount_percent > 0:
-            return price - price * (self.discount_percent / 100)
+            discount = price * Decimal(self.discount_percent) / Decimal('100')
+            return price - discount
         return price - self.discount_amount
 
-# LƯU LỊCH SỬ XEM SÁCH (dùng cho AI)
 class BookViewHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="view_history")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="viewed_by")
@@ -106,7 +114,6 @@ class BookViewHistory(models.Model):
     class Meta:
         ordering = ["-viewed_at"]
 
-# Yêu thích / wishlist
 class FavoriteBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorites")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="favorited_by")
@@ -115,7 +122,6 @@ class FavoriteBook(models.Model):
     class Meta:
         unique_together = ("user", "book")
 
-# Cache gợi ý (nếu muốn persist score)
 class RecommendationCache(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recommendation_cache")
     book = models.ForeignKey(Book, on_delete=models.CASCADE)

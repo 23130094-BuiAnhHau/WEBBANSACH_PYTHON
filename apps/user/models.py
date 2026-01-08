@@ -32,27 +32,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"Hồ sơ {self.user.username}"
-
-
-# Khuyến mãi theo khách hàng
-class CustomerPromotion(models.Model):
-    TYPE_CHOICES = [
-        ("NEW", "Khách hàng mới"),
-        ("VIP", "Khách hàng VIP"),
-        ("BIRTHDAY", "Sinh nhật"),
-    ]
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    promo_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-    discount_percent = models.PositiveIntegerField(default=0)
-
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    is_active = models.BooleanField(default=True)
-
-    def is_valid(self):
-        now = timezone.now()
-        return self.is_active and self.start_date <= now <= self.end_date
-
-    def __str__(self):
-        return f"{self.user.username} - {self.promo_type} ({self.discount_percent}%)"

@@ -1,16 +1,66 @@
-<h2>Chuyển khoản ngân hàng</h2>
+{% load static humanize %} 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán chuyển khoản</title>
 
-<p><b>Ngân hàng:</b> {{ bank_name }}</p>
-<p><b>Số tài khoản:</b> {{ account_number }}</p>
-<p><b>Chủ tài khoản:</b> {{ account_name }}</p>
-<p><b>Nội dung:</b> THANHTOAN_{{ order.id }}</p>
+    <!-- BASE -->
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
 
-<img src="{% static qr_image %}" width="250">
+    <!-- PAGE -->
+    <link rel="stylesheet" href="{% static 'order/bank_transfer.css' %}">
+</head>
 
-<p style="color:red">
-    Vui lòng chuyển khoản đúng nội dung để hệ thống xác nhận nhanh hơn
-</p>
+<body>
 
-<a href="{% url 'order:order_detail' order.id %}">
-    Tôi đã chuyển khoản
-</a>
+{% include "base/header.html" %}
+
+<main class="main-content">
+
+    <section class="content">
+        <div class="bank-transfer-container">
+
+            <h2>Chuyển khoản ngân hàng</h2>
+
+            <div class="bank-info">
+                <p><b>Ngân hàng:</b> {{ bank_name }}</p>
+                <p><b>Số tài khoản:</b> {{ account_number }}</p>
+                <p><b>Chủ tài khoản:</b> {{ account_name }}</p>
+                <p>
+                    <b>Nội dung:</b>
+                    <span class="transfer-code">
+                        THANHTOAN_{{ order.id }}
+                    </span>
+                </p>
+            </div>
+
+            <div class="qr-wrapper">
+                <img
+                    src="https://media-cdn-v2.laodong.vn/storage/newsportal/2021/6/15/920631/4128Nh_2021-06-15_Lu.jpeg"
+                    alt="QR chuyển khoản ngân hàng"
+                >
+            </div>
+            <div class="summary-row total">
+                <strong>Tổng thanh toán</strong>
+                <strong>{{ final_total|floatformat:0|intcomma}}₫</strong>
+            </div>
+            <p class="transfer-note">
+                Vui lòng chuyển khoản đúng nội dung để hệ thống xác nhận nhanh hơn
+            </p>
+
+            <a href="{% url 'order:order_detail' order.id %}"
+                class="confirm-btn">
+                Tôi đã chuyển khoản
+            </a>
+
+        </div>
+    </section>
+
+</main>
+
+{% include "base/footer.html" %}
+
+</body>
+</html>

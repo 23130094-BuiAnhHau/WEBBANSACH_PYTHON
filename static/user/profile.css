@@ -1,33 +1,20 @@
- * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-    background: #f8fafc;
-    color: #333;
-    margin: 0;
-    padding: 40px;
-}
-
-/* Layout */
-.account-wrapper {
+/* Container */
+.profile-container {
     display: flex;
     max-width: 1100px;
-    margin: auto;
+    margin: 40px auto 80px;
     background: #fff;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.15);
 }
 
 /* Sidebar */
-.sidebar {
+.profile-sidebar {
     width: 260px;
-    background: #fafafa;
-    border-right: 1px solid #eee;
+    background: linear-gradient(180deg, #c62828, #8e0000);
     padding: 25px;
+    color: #fff;
 }
 
 .avatar-box {
@@ -40,41 +27,49 @@
     height: 90px;
     border-radius: 50%;
     object-fit: cover;
+    border: 3px solid #f9a825;
 }
 
 .avatar-box h4 {
-    margin-top: 10px;
+    margin-top: 12px;
+    font-weight: 600;
 }
 
-.sidebar ul {
+/* Menu */
+.menu {
     list-style: none;
     padding: 0;
 }
 
-.sidebar li {
-    padding: 12px;
-    border-radius: 6px;
+.menu li {
+    padding: 12px 14px;
+    border-radius: 8px;
     margin-bottom: 8px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-.sidebar li.active,
-.sidebar li:hover {
-    background: #e3f2fd;
+.menu li.active,
+.menu li:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
-.sidebar a {
+.menu a {
     text-decoration: none;
-    color: #333;
+    color: #fff;
+    display: block;
 }
 
 /* Content */
-.content {
+.profile-content {
     flex: 1;
-    padding: 35px;
+    padding: 40px;
+    background: #fff8f8;
 }
 
-.content h2 {
+.profile-content h2 {
     margin-bottom: 25px;
+    color: #c62828;
 }
 
 /* Form */
@@ -90,6 +85,7 @@
     display: block;
     font-weight: 500;
     margin-bottom: 6px;
+    color: #444;
 }
 
 .form-group input,
@@ -97,9 +93,16 @@
     width: 100%;
     padding: 10px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
 }
 
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #c62828;
+}
+
+/* Row */
 .form-row {
     display: flex;
     gap: 20px;
@@ -107,32 +110,37 @@
 
 /* Actions */
 .form-actions {
-    margin-top: 25px;
+    margin-top: 30px;
     display: flex;
     gap: 15px;
 }
 
+/* Button chính */
 .form-actions button {
-    background: #2e7d32;
+    background: #c62828;
     color: #fff;
-    padding: 10px 20px;
+    padding: 11px 22px;
     border-radius: 6px;
     border: none;
     cursor: pointer;
-}
-
-.promo-btn {
-    background: #ff9800;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 6px;
-    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
 }
 
 .form-actions button:hover {
-    background: #1b5e20;
+    background: #8e0000;
+}
+
+/* Button phụ */
+.promo-btn {
+    background: #f9a825;
+    color: #fff;
+    padding: 11px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 .promo-btn:hover {
-    background: #e68900;
+    background: #f57f17;
 }

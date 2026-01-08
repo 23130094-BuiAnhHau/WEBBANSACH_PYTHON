@@ -1,6 +1,3 @@
-/* --- static/css/checkout.css --- */
-
-
 .checkout-container {
     max-width: 1200px;
     margin: auto;
@@ -10,16 +7,17 @@
 }
 
 .card {
-    background: white;
+    background: #fff5f0; /* nền trắng pha cam nhạt */
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 10px rgba(212, 0, 0, 0.1); /* bóng đỏ nhẹ */
 }
 
 h2 {
     margin-bottom: 15px;
     font-size: 18px;
+    color: #d40000; /* đỏ Tết */
 }
 
 input,
@@ -28,17 +26,18 @@ select {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #f0a500; /* cam nhạt */
     margin-bottom: 12px;
     font-size: 14px;
     resize: vertical;
 }
+
 textarea {
     min-height: 100px;
 }
 
 input.readonly {
-    background: #f0f0f0;
+    background: #ffeede; /* nền đỏ nhạt */
 }
 
 .phone-box {
@@ -56,11 +55,11 @@ input.readonly {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    border: 2px solid #000; 
+    border: 2px solid #d40000; /* đỏ chủ đạo */
     border-radius: 14px;
     padding: 14px 16px;
     cursor: pointer;
+    background: #fff0f0; /* đỏ nhạt */
 }
 
 .ship-item div {
@@ -75,28 +74,21 @@ input.readonly {
     margin: 0;
 }
 
-
 .ship-empty input {
-    
-    border: 1px solid #ddd; 
-    background-color: #f8f8f8; 
-    color: #888; 
+    border: 1px solid #f0a500; 
+    background-color: #fff5f0; 
+    color: #d40000; 
     text-align: start; 
     height: 50px; 
     font-size: 15px;
     cursor: default; 
 }
 
-
-.ship-empty input {
-    margin-bottom: 0;
-}
-
 .pay-item {
     display: flex;
     align-items: center;
     padding: 14px 0;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #f0a500;
     cursor: pointer;
 }
 
@@ -105,6 +97,20 @@ input.readonly {
     padding-top: 0;
 }
 
+.add-voucher-btn {
+    display: inline-block !important;
+    padding: 6px 12px;
+    background: #d40000; /* đỏ Tết */
+    color: #fff !important;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.add-voucher-btn:hover {
+    background: #ff4d4d; /* đỏ nhạt hơn */
+}
 
 .pay-left {
     display: flex;
@@ -132,11 +138,12 @@ input.readonly {
 .card:has(.invoice-header) h2 {
     margin: 0;
     font-size: 16px;
+    color: #d40000;
 }
 
 .invoice-link {
     font-size: 13px;
-    color: #777;
+    color: #ff6600; /* cam */
     cursor: pointer;
 }
 
@@ -144,13 +151,12 @@ input.readonly {
     margin-left: 5px;
 }
 
-
 .product {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0a500;
     padding-bottom: 15px;
 }
 .product:last-of-type {
@@ -162,6 +168,7 @@ input.readonly {
     height: 60px;
     object-fit: cover;
     border-radius: 8px;
+    border: 1px solid #d40000;
 }
 
 .product-right {
@@ -180,7 +187,6 @@ input.readonly {
     font-weight: 500;
     margin: 0;
     flex: 1;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -191,7 +197,7 @@ input.readonly {
     border: none;
     cursor: pointer;
     font-size: 16px;
-    color: #999;
+    color: #d40000;
 }
 
 .product-bottom {
@@ -203,12 +209,13 @@ input.readonly {
 
 .price {
     font-weight: bold;
+    color: #d40000;
 }
 
 .qty-box {
     display: flex;
     align-items: center;
-    border: 1px solid #dcdcdc;
+    border: 1px solid #f0a500;
     border-radius: 12px;
     overflow: hidden;
     width: 110px;
@@ -219,49 +226,41 @@ input.readonly {
     width: 32px;
     height: 100%;
     border: none;
-    background: #fff;
+    background: #fff0f0;
     font-size: 18px;
     cursor: pointer;
+    color: #d40000;
 }
 
 .qty-number {
     flex: 1;
     text-align: center;
-    border-left: 1px solid #dcdcdc;
-    border-right: 1px solid #dcdcdc;
+    border-left: 1px solid #f0a500;
+    border-right: 1px solid #f0a500;
     font-size: 15px;
 }
 
 .variant {
     margin-top: 6px;
-    border: 1px solid #ddd;
+    border: 1px solid #f0a500;
     border-radius: 10px;
     padding: 4px;
     width: fit-content;
     font-size: 13px;
-    background: #EDEDED;
+    background: #fff5f0;
     font-weight: 500;
-    color: #333;
+    color: #d40000;
 }
-
-.variant .fa-chevron-right {
-    margin-left: 5px;
-    font-size: 10px;
-}
-
 
 .coupon-select {
-    border: 1px solid #ccc;
+    border: 1px solid #f0a500;
     padding: 10px;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
-    color: #555;
+    color: #d40000;
     cursor: pointer;
-}
-.coupon-select i {
-    margin-right: 5px;
 }
 
 .coupon-input {
@@ -278,7 +277,7 @@ input.readonly {
 }
 
 .coupon-input button {
-    background: black;
+    background: #d40000;
     color: white;
     border: none;
     border-radius: 10px;
@@ -286,7 +285,6 @@ input.readonly {
     font-size: 15px;
 }
 
-/* TÓM TẮT */
 .summary-row {
     display: flex;
     justify-content: space-between;
@@ -297,17 +295,28 @@ input.readonly {
     font-weight: bold;
     font-size: 18px;
     padding-top: 10px;
-    border-top: 1px dashed #ccc; 
+    border-top: 1px dashed #d40000; 
 }
 
 .order-btn {
     margin-top: 15px;
     width: 100%;
-    background: black;
+    background: #d40000;
     color: white;
     padding: 15px;
     border-radius: 12px;
     font-size: 18px;
     border: none;
     cursor: pointer;
+}
+
+.order-btn:hover {
+    background: #ff4d4d;
+}
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
 }

@@ -7,51 +7,75 @@
 }
 
 body {
-    background: #f8fafc;
-    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #fff7f7;
+    color: #1f2937;
 }
 
+/* ===== HERO ===== */
 .hero {
-    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    background: linear-gradient(135deg, #d51c24, #b5161d);
     padding: 70px 20px;
     color: white;
     text-align: center;
 }
 
+.hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 16px;
+    opacity: 0.95;
+}
+
+/* ===== CONTAINER ===== */
 .container {
     max-width: 1200px;
     margin: auto;
     padding: 40px 20px;
 }
 
+/* ===== ALERT ===== */
 .alert {
-    background: #f0fff4;
-    border-left: 5px solid #2e7d32;
-    padding: 15px;
+    background: #fff1f2;
+    border-left: 5px solid #d51c24;
+    padding: 15px 18px;
     border-radius: 8px;
     margin-bottom: 30px;
+    color: #7f1d1d;
+    font-weight: 500;
 }
 
+/* ===== GRID ===== */
 .book-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 26px;
 }
 
+/* ===== CARD ===== */
 .book-card {
-    background: white;
+    background: #ffffff;
     border-radius: 14px;
+    border: 1px solid #fee2e2;
     box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
 .book-card:hover {
     transform: translateY(-8px);
+    box-shadow: 0 18px 32px rgba(213, 28, 36, 0.25);
+    border-color: #d51c24;
 }
 
+/* ===== IMAGE ===== */
 .book-image {
     height: 300px;
     overflow: hidden;
+    background: #fff1f2;
 }
 
 .book-image img {
@@ -60,11 +84,56 @@ body {
     object-fit: cover;
 }
 
+/* ===== INFO ===== */
 .book-info {
     padding: 18px;
 }
 
+.book-info h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.author {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+/* ===== PRICE ===== */
 .price {
-    color: #2e7d32;
-    font-weight: bold;
+    color: #d51c24;
+    font-weight: 700;
+    font-size: 17px;
+}
+
+/* ===== RATING ===== */
+.rating {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #f59e0b;
+}
+
+/* ===== EMPTY ===== */
+.empty {
+    text-align: center;
+    font-size: 16px;
+    color: #6b7280;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .book-image {
+        height: 260px;
+    }
+
+    .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    }
 }

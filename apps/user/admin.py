@@ -1,21 +1,16 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from apps.user.models import User, Profile, CustomerPromotion
+from apps.user.models import User, Profile
 
 
-# ======================================================
-# Inline Profile
-# ======================================================
+
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
     extra = 0
 
 
-# ======================================================
-# User Admin
-# ======================================================
-@admin.register(User)
+
 class UserAdmin(DjangoUserAdmin):
     list_display = (
         "username",
@@ -42,10 +37,6 @@ class UserAdmin(DjangoUserAdmin):
         }),
     )
 
-
-# ======================================================
-# Profile (xem lẻ – ít dùng)
-# ======================================================
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "date_of_birth", "gender")
@@ -53,19 +44,4 @@ class ProfileAdmin(admin.ModelAdmin):
     list_filter = ("gender",)
 
 
-# ======================================================
-# CustomerPromotion – Khuyến mãi theo khách hàng
-# ======================================================
-@admin.register(CustomerPromotion)
-class CustomerPromotionAdmin(admin.ModelAdmin):
-    list_display = (
-        "user",
-        "promo_type",
-        "discount_percent",
-        "is_active",
-        "start_date",
-        "end_date",
-    )
-    list_filter = ("promo_type", "is_active")
-    search_fields = ("user__username",)
-    ordering = ("-start_date",)
+

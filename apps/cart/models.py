@@ -15,13 +15,6 @@ class CartItem(models.Model):
     book = models.ForeignKey(
     "book.Book",
     on_delete=models.PROTECT)
-
     quantity = models.PositiveIntegerField(default=1)
-
-    def get_unit_price(self):
-        if not self.book:
-            return 0
-        return self.book.get_final_price()
-
     def get_total_price(self):
-        return self.get_unit_price() * self.quantity
+        return self.book.get_final_price() * self.quantity

@@ -1,7 +1,8 @@
 from django.views.generic import TemplateView
-from django.db.models import Count
-from apps.book.models import Book, Category
+from django.db.models import Count, Prefetch
+from apps.book.models import Book, Category, BookImage
 from apps.book.ai.recommender import BookRecommender
+from apps.home.models import Banner
 
 
 class HomeView(TemplateView):
@@ -10,23 +11,47 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        #  SÁCH MỚI NHẤT (theo created_at)
-        context["new_books"] = Book.objects.order_by("-created_at")[:12]
+        # Banner active đầu tiên
+        context["banner"] = Banner.objects.filter(is_active=True).first()
 
-        #  SÁCH BÁN CHẠY (dựa OrderItem)
+        # Query ảnh hợp lệ
+        image_qs = BookImage.objects.exclude(image="").exclude(image__isnull=True)
+
+        # SÁCH MỚI NHẤT
+        context["new_books"] = (
+            Book.objects
+            .order_by("-created_at")
+            .prefetch_related(
+                Prefetch("images", queryset=image_qs)
+            )[:12]
+        )
+
+        # SÁCH BÁN CHẠY
         context["bestsellers"] = (
             Book.objects
             .annotate(sold_count=Count("orderitem"))
-            .order_by("-sold_count")[:12]
+            .order_by("-sold_count")
+            .prefetch_related(
+                Prefetch("images", queryset=image_qs)
+            )[:12]
         )
 
-        #  DANH MỤC
+        # DANH MỤC
         context["categories"] = Category.objects.all()
 
-        #  AI RECOMMEND
+        # AI RECOMMEND
         user = self.request.user
         if user.is_authenticated:
-            context["ai_recommendations"] = BookRecommender.recommend(user, limit=8)
+            ai_books = BookRecommender.recommend(user, limit=8)
+
+            context["ai_recommendations"] = (
+                Book.objects
+                .filter(id__in=[b.id for b in ai_books])
+                .prefetch_related(
+                    Prefetch("images", queryset=image_qs)
+                )
+            )
+
         else:
             context["ai_recommendations"] = []
 

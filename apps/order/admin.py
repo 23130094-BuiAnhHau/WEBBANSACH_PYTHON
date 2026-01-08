@@ -26,6 +26,7 @@ class VoucherAdmin(admin.ModelAdmin):
         "voucher_type",
         "discount_value",
         "min_order_amount",
+        "max_discount_amount",
         "quantity",
         "is_active",
         "start_date",
@@ -74,19 +75,40 @@ class OrderAdmin(admin.ModelAdmin):
         "mark_completed",
         "mark_cancelled",
     ]
-
+    #Đánh dấu đã xác nhận 
+    @admin.action(description="Đánh dấu đơn hàng đang giao")
+    def mark_completed(self, request, queryset):
+        queryset.update(status="Shipped")
     # Đánh dấu hoàn thành
     @admin.action(description="Đánh dấu đơn hàng đã hoàn thành")
     def mark_completed(self, request, queryset):
         queryset.update(status="Completed")
-
     # Đánh dấu huỷ
     @admin.action(description="Huỷ đơn hàng")
     def mark_cancelled(self, request, queryset):
         queryset.update(status="Cancelled")
+#Trừ số lượng khi đơn hàng xác nhận và cộng lại khi hủy
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "status", "total_amount")
+    list_editable = ("status",)
 
+    def save_model(self, request, obj, form, change):
+        if change:
+            old_status = Order.objects.get(pk=obj.pk).status
+        else:
+            old_status = None
+        super().save_model(request, obj, form, change)
+        if old_status != "Pending" and obj.status == "Pending":
+            for item in obj.items.all():
+                book = item.book
+                book.stock -= item.quantity
+                book.save()
+        if old_status != "Cancelled" and obj.status == "Cancelled":
+            for item in obj.items.all():
+                book = item.book
+                book.stock += item.quantity
+                book.save()
 # PromoCode (nhập tay)
-
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):
     list_display = (

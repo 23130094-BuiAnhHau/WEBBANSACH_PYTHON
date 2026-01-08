@@ -3,62 +3,99 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
+    <title>BookStore - Đăng ký tài khoản</title>
+
+    <!-- CSS dùng chung giống HOME -->
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
+
+    <!-- CSS riêng đăng nhập / đăng ký -->
     <link rel="stylesheet" href="{% static 'user/login.css' %}">
 </head>
 <body>
 
-<div class="login-wrapper">
-    <div class="login-box">
-        <h2 class="title">ĐĂNG KÝ</h2>
+<!-- HEADER -->
+{% include "base/header.html" %}
 
-        <!-- Thông báo chung -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+<!-- MAIN -->
+<main class="main-content">
 
-        <form method="post">
-            {% csrf_token %}
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h2 class="title">ĐĂNG KÝ</h2>
 
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Tên đăng nhập" value="{{ request.POST.username }}">
-                {% if form.username.errors %}
-                    <small class="error">{{ form.username.errors.0 }}</small>
-                {% endif %}
+            <!-- Thông báo chung -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Tên đăng nhập"
+                        value="{{ request.POST.username }}"
+                    >
+                    {% if form.username.errors %}
+                        <small class="error">{{ form.username.errors.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value="{{ request.POST.email }}"
+                    >
+                    {% if form.email.errors %}
+                        <small class="error">{{ form.email.errors.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="password"
+                        name="password1"
+                        placeholder="Mật khẩu"
+                    >
+                    {% if form.password1.errors %}
+                        <small class="error">{{ form.password1.errors.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="password"
+                        name="password2"
+                        placeholder="Nhập lại mật khẩu"
+                    >
+                    {% if form.password2.errors %}
+                        <small class="error">{{ form.password2.errors.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Đăng ký
+                </button>
+            </form>
+
+            <div class="register">
+                Đã có tài khoản?
+                <a href="{% url 'user:login' %}">Đăng nhập</a>
             </div>
-
-            <div class="form-group">
-                <input type="email" name="email" placeholder="Email" value="{{ request.POST.email }}">
-                {% if form.email.errors %}
-                    <small class="error">{{ form.email.errors.0 }}</small>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <input type="password" name="password1" placeholder="Mật khẩu">
-                {% if form.password1.errors %}
-                    <small class="error">{{ form.password1.errors.0 }}</small>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <input type="password" name="password2" placeholder="Nhập lại mật khẩu">
-                {% if form.password2.errors %}
-                    <small class="error">{{ form.password2.errors.0 }}</small>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="btn-login">Đăng ký</button>
-        </form>
-
-        <div class="register">
-            Đã có tài khoản?
-            <a href="{% url 'user:login' %}">Đăng nhập</a>
         </div>
     </div>
-</div>
+
+</main>
+
+<!-- FOOTER -->
+{% include "base/footer.html" %}
 
 </body>
 </html>

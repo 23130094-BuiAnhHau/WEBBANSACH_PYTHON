@@ -1,0 +1,54 @@
+{% load static humanize %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng #{{ order.id }}</title>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
+
+    <!-- CSS riêng -->
+    <link rel="stylesheet" href="{% static 'order/order_delete_confirm.css' %}">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+{% include "base/header.html" %}
+
+<main class="main-content">
+<div class="deleted-container">
+    <div class="card success-card">
+        <div class="success-icon">
+            <i class="fa-solid fa-check-circle"></i>
+        </div>
+
+        <h2 class="success-title">Đã hủy đơn hàng thành công</h2>
+
+        <div class="order-info">
+            <p>Đơn hàng <strong>#DH{{ order_id }}</strong> đã được hủy.</p>
+            <p class="success-message">
+                Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.
+            </p>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'order:order_history' %}" class="btn btn-primary">
+                <i class="fa-solid fa-list"></i>
+                Xem lịch sử đơn hàng
+            </a>
+            <a href="{% url 'book:book_list' %}" class="btn btn-secondary">
+                <i class="fa-solid fa-book"></i>
+                Tiếp tục mua sắm
+            </a>
+        </div>
+    </div>
+</div>
+</main>
+
+{% include "base/footer.html" %}
+</body>
+</html>

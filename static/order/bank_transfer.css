@@ -1,0 +1,59 @@
+
+
+.bank-transfer-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.bank-transfer-container h2 {
+    margin-bottom: 20px;
+}
+
+.bank-info {
+    text-align: left;
+    margin-bottom: 20px;
+    font-size: 15px;
+}
+
+.bank-info p {
+    margin: 8px 0;
+}
+
+.transfer-code {
+    color: #c92127;
+    font-weight: 600;
+}
+
+.qr-wrapper {
+    margin: 25px 0;
+}
+
+.qr-wrapper img {
+    width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.transfer-note {
+    color: red;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.confirm-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: #c92127;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.confirm-btn:hover {
+    background: #a0171c;
+    transform: translateY(-1px);
+}

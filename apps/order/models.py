@@ -5,14 +5,8 @@ from django.utils import timezone
 
 from apps.book.models import Book
 
-# ======================================================
-# 1 Promotion (KIỂU CŨ – có thể giữ để tham khảo)
-# ======================================================
+
 class Promotion(models.Model):
-    """
-    Mã khuyến mãi đơn giản (cũ)
-    -> Có thể dùng cho demo hoặc legacy
-    """
     code = models.CharField(max_length=50, unique=True)
     discount_percent = models.PositiveIntegerField(help_text="Phần trăm giảm (0-100)")
     expire_date = models.DateField()
@@ -21,15 +15,9 @@ class Promotion(models.Model):
         return f"{self.code} ({self.discount_percent}%)"
 
 
-# ======================================================
-# 2 Voucher – PHIẾU GIẢM GIÁ (ADMIN TẠO)
-# ======================================================
-class Voucher(models.Model):
-    """
-    Voucher do ADMIN tạo (giống Shopee)
-    User có thể lưu vào ví và dùng khi checkout
-    """
 
+class Voucher(models.Model):
+    
     VOUCHER_TYPE = [
         ("PERCENT", "Giảm theo %"),
         ("FIXED", "Giảm tiền cố định"),
@@ -50,13 +38,21 @@ class Voucher(models.Model):
         default=Decimal("0.00"),
         help_text="Đơn hàng tối thiểu để áp dụng"
     )
+    max_discount_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        null=True,
+        blank=True,
+        help_text="Số tiền giảm tối đa (0 = không giới hạn)"
+    )
 
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
     quantity = models.PositiveIntegerField(default=0, help_text="Số lượt sử dụng còn lại")
     is_active = models.BooleanField(default=True)
-
+    @property
     def is_valid(self):
         """Kiểm tra voucher còn hợp lệ không"""
         now = timezone.now()
@@ -70,14 +66,9 @@ class Voucher(models.Model):
         return self.name
 
 
-# ======================================================
-# 3 UserVoucher – VÍ GIẢM GIÁ CỦA USER
-# ======================================================
+# Ví giảm giá của user
 class UserVoucher(models.Model):
-    """
-    Liên kết USER – VOUCHER
-    -> Đây chính là 'ví voucher' của user
-    """
+
 
     user = models.ForeignKey(
         'user.User',
@@ -91,7 +82,7 @@ class UserVoucher(models.Model):
         related_name='claimed_users'
     )
 
-    used = models.BooleanField(default=False)  # Đã dùng hay chưa
+    used = models.BooleanField(default=False)  
     claimed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -154,7 +145,7 @@ class Order(models.Model):
         help_text="Mã nhập tay"
     )
 
-    # ===== GIÁ TIỀN =====
+
     total_price = models.DecimalField(
         max_digits=12,
         decimal_places=2,
@@ -173,9 +164,7 @@ class Order(models.Model):
         return f"Order #{self.id} - {self.user.username}"
 
 
-# ======================================================
-# 5 OrderItem – CHI TIẾT SẢN PHẨM
-# ======================================================
+
 class OrderItem(models.Model):
     """
     Chi tiết từng sản phẩm trong đơn hàng
@@ -203,9 +192,7 @@ class OrderItem(models.Model):
         return (self.price or Decimal('0.00')) * self.quantity
 
 
-# ======================================================
-# 6 RecommendationEngine – GỢI Ý SẢN PHẨM
-# ======================================================
+
 class RecommendationEngine(models.Model):
     """
     Lưu lịch sử mua hàng để gợi ý sách
@@ -233,9 +220,7 @@ class RecommendationEngine(models.Model):
         return Book.objects.exclude(id__in=bought_ids)[:top_k]
 
 
-# ======================================================
-# 7 PromoCode – NHẬP MÃ BẰNG TAY
-# ======================================================
+
 class PromoCode(models.Model):
     """
     Mã giảm giá nhập tay (không lưu ví)

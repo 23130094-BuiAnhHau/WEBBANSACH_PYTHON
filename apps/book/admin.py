@@ -23,9 +23,6 @@ def update_book_average_rating(book):
     book.save(update_fields=["average_rating"])
 
 
-# =======================
-# Inline
-# =======================
 
 class BookImageInline(admin.TabularInline):
     model = BookImage
@@ -41,9 +38,6 @@ class ReviewInline(admin.TabularInline):
     show_change_link = True
 
 
-# =======================
-# Admin Config
-# =======================
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -51,7 +45,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
 
-    #  CHO PHÉP SỬA / XOÁ RÕ RÀNG
+    
     actions = ["delete_selected"]
 
 
@@ -98,8 +92,6 @@ class BookAdmin(admin.ModelAdmin):
             "fields": ("created_at", "updated_at")
         }),
     )
-
-    # CHO PHÉP XOÁ SÁCH (RÕ RÀNG)
     actions = ["delete_selected"]
 
 

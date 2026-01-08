@@ -4,9 +4,7 @@ from apps.order.models import UserVoucher
 
 
 class CheckoutForm(forms.Form):
-    # =============================
-    # THÔNG TIN NGƯỜI NHẬN
-    # =============================
+    #Thông tin người nhận
     fullname = forms.CharField(
         max_length=255,
         widget=forms.TextInput(attrs={
@@ -55,13 +53,10 @@ class CheckoutForm(forms.Form):
         })
     )
 
-    # =============================
-    # THANH TOÁN
-    # =============================
+    # Hình thức thanh toán
     PAYMENT_CHOICES = [
         ("COD", "Thanh toán khi nhận hàng"),
         ("BANK", "Chuyển khoản ngân hàng"),
-        ("QR", "Chuyển khoản QR"),
     ]
 
     payment_method = forms.ChoiceField(
@@ -69,19 +64,18 @@ class CheckoutForm(forms.Form):
         widget=forms.RadioSelect
     )
 
-    # =============================
-    # VOUCHER TRONG VÍ USER
-    # =============================
+    # Voucher hiện coa của user
     user_voucher = forms.ModelChoiceField(
         queryset=UserVoucher.objects.none(),
         required=False,
         empty_label="-- Không dùng voucher --",
-        widget=forms.RadioSelect
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'onchange': 'this.form.submit()'
+        })
     )
 
-    # =============================
-    # PROMO CODE NHẬP TAY
-    # =============================
+    #Mã voucher user nhập vào
     promo_code = forms.CharField(
         max_length=50,
         required=False,
@@ -91,9 +85,7 @@ class CheckoutForm(forms.Form):
         })
     )
 
-    # =============================
-    # GHI CHÚ
-    # =============================
+    # Ghi chú đơn hàng
     note = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
@@ -103,9 +95,7 @@ class CheckoutForm(forms.Form):
         })
     )
 
-    # =============================
-    # CUSTOM INIT
-    # =============================
+    
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)

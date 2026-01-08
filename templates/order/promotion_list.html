@@ -1,63 +1,105 @@
-{% load static %}
-
+{% load static humanize %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Mã giảm giá của tôi</title>
-    <link rel="stylesheet" href="{% static 'user/promotion.css' %}">
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'order/promotion.css' %}">
 </head>
 <body>
 
-<div class="promo-container">
-    <h2>🎟 Mã giảm giá của tôi</h2>
+{% include "base/header.html" %}
 
-    {% if promotions %}
-        <div class="promo-list">
-            {% for promo in promotions %}
-                <div class="promo-card {% if not promo.is_valid %}expired{% endif %}">
-                    
-                    <div class="promo-left">
-                        <span class="discount">{{ promo.discount_percent }}%</span>
-                        <span class="type">{{ promo.get_promo_type_display }}</span>
+<main class="main-content">
+    <div class="page-header">
+        <h1>Mã giảm giá của tôi</h1>
+        <p>Tận hưởng những ưu đãi dành riêng cho bạn</p>
+    </div>
+
+    <div class="voucher-grid">
+        {% if vouchers %}
+            {% for uv in vouchers %}
+                {% with v=uv.voucher %}
+                    <div class="voucher-card {% if uv.is_expiring %}expiring-soon{% endif %}">
+                        
+                        <div class="voucher-top">
+                            {% if uv.is_expiring %}
+                                <div class="voucher-badge">Sắp hết hạn</div>
+                            {% endif %}
+
+                            <div class="discount-main">
+                                {% if v.voucher_type == "PERCENT" %}
+                                    <div class="discount-value">{{ v.discount_value }}%</div>
+                                    <div class="discount-type">Giảm giá</div>
+                                {% else %}
+                                    <div class="discount-value">
+                                        {{ v.discount_value|floatformat:0|intcomma }}₫
+                                    </div>
+                                    <div class="discount-type">Giảm trực tiếp</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="max-discount">
+                                Giảm tối đa:
+                                {% if v.max_discount_amount %}
+                                    {{ v.max_discount_amount|floatformat:0|intcomma }}₫
+                                {% else %}
+                                    Không giới hạn
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="voucher-middle">
+                            <div class="voucher-name">{{ v.name }}</div>
+
+                            <div class="voucher-details">
+                                <div class="detail-item">
+                                    <span class="detail-icon">✓</span>
+                                    <span>Đơn tối thiểu:
+                                        {{ v.min_order_amount|floatformat:0|intcomma }}₫
+                                    </span>
+                                </div>
+
+                                <div class="detail-item">
+                                    <span class="detail-icon">📅</span>
+                                    <span>HSD: {{ v.end_date|date:"d/m/Y" }}</span>
+                                </div>
+
+                                <div class="detail-item">
+                                    <span class="detail-icon">🕒</span>
+                                    <span>Nhận lúc: {{ uv.claimed_at|date:"H:i d/m/Y" }}</span>
+                                </div>
+                            </div>
+
+                            {% if uv.is_expiring %}
+                                <div class="time-warning">
+                                    ⏰ Còn {{ uv.days_left }} ngày để sử dụng
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="voucher-bottom">
+                            <a href="{% url 'book:book_list' %}?user_voucher={{ uv.id }}"
+                               class="use-btn">
+                                Áp dụng ngay
+                            </a>
+                        </div>
+
                     </div>
-
-                    <div class="promo-right">
-                        <p>
-                            Áp dụng từ
-                            <strong>{{ promo.start_date|date:"d/m/Y" }}</strong>
-                            đến
-                            <strong>{{ promo.end_date|date:"d/m/Y" }}</strong>
-                        </p>
-
-                        {% if promo.is_valid %}
-                            <span class="status active">✔ Còn hiệu lực</span>
-
-                            
-                            <form method="post" action="{% url 'order:apply_promotion' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="promo_id" value="{{ promo.id }}">
-                                <button type="submit" class="use-btn">
-                                    Dùng mã
-                                </button>
-                            </form>
-
-                        {% else %}
-                            <span class="status expired">✖ Hết hạn</span>
-
-                            <button class="use-btn disabled" disabled>
-                                 Không khả dụng
-                            </button>
-                        {% endif %}
-                    </div>
-
-                </div>
+                {% endwith %}
             {% endfor %}
-        </div>
-    {% else %}
-        <p class="empty">Bạn chưa có mã giảm giá nào.</p>
-    {% endif %}
-</div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🎁</div>
+                <h3>Bạn chưa có voucher nào</h3>
+                <p>Tham gia chương trình khuyến mãi để nhận ưu đãi!</p>
+            </div>
+        {% endif %}
+    </div>
+</main>
 
+{% include "base/footer.html" %}
 </body>
 </html>

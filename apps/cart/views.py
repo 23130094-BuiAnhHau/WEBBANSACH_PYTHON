@@ -34,7 +34,7 @@ def add_to_cart(request, book_id):
         item.quantity += 1
         item.save()
 
-    return redirect("cart:cart_detail")  # reload lại trang
+    return redirect("cart:cart_detail")  
 
 
 @login_required

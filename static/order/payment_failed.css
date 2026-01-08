@@ -6,71 +6,70 @@
 }
 
 body {
-    background: #f8fafc;
+    background: #fff5f5;
     color: #333;
 }
 
-
-    /* Header */
-    .header {
+/* Header */
+.header {
     background: white;
-    box-shadow: 0 2px 15px rgba(0, 100, 0, 0.08);
+    box-shadow: 0 2px 15px rgba(200, 0, 0, 0.08);
     position: sticky;
     top: 0;
     z-index: 1000;
-    }
+}
 
-    .header-container {
+.header-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    }
+}
 
-    .logo {
+.logo {
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: #2e7d32;
-    }
+    color: #d40000;
+}
 
-    .logo-icon {
+.logo-icon {
     font-size: 28px;
     font-weight: bold;
     margin-right: 10px;
-    }
+}
 
-    .logo-text {
+.logo-text {
     font-size: 24px;
     font-weight: 700;
-    }
+}
 
-    .nav-links {
+.nav-links {
     display: flex;
     gap: 30px;
-    }
+}
 
-    .nav-links a {
+.nav-links a {
     text-decoration: none;
-    color: #4a5568;
+    color: #7a3a3a;
     font-weight: 500;
     transition: color 0.3s;
-    }
+}
 
-    .nav-links a:hover {
-    color: #2e7d32;
-    }
+.nav-links a:hover {
+    color: #d40000;
+}
 
-    .header-actions {
+.header-actions {
     display: flex;
     align-items: center;
     gap: 20px;
-    }
+}
 
-    .cart-btn {
-    background: #2e7d32;
+.cart-btn {
+    background: #d40000;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -79,9 +78,9 @@ body {
     font-weight: 500;
     text-decoration: none;
     display: inline-block;
-    }
+}
 
-/* body */
+/* Body */
 .confirmation-container {
     max-width: 800px;
     margin: 60px auto;
@@ -93,28 +92,24 @@ body {
     padding: 30px;
     margin-bottom: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(200, 0, 0, 0.08);
 }
 
 .card h2, .card h3 {
-    color: #2d3748;
+    color: #4a1010;
     font-weight: 700;
     font-size: 24px;
     margin-bottom: 20px;
-    border-bottom: 2px solid #edf2f7;
+    border-bottom: 2px solid #ffe5e5;
     padding-bottom: 10px;
 }
 
-
-/* ====================================
-   THÔNG BÁO THẤT BẠI (FAILED CARD) 
-   ==================================== */
-
+/* Thông báo thất bại */
 .failed-card {
     text-align: center;
-    border-left: 5px solid #d9534f; 
+    border-left: 5px solid #d9534f;
     padding: 40px;
-    background-color: #fce4e4; 
+    background-color: #fff0f0;
 }
 
 .failed-card .fa-circle-xmark {
@@ -132,7 +127,7 @@ body {
 
 .failed-card p {
     font-size: 16px;
-    color: #4a5568;
+    color: #7a3a3a;
     line-height: 1.6;
     margin-bottom: 10px;
 }
@@ -143,16 +138,11 @@ body {
     margin-top: 15px;
     padding: 10px;
     border-radius: 8px;
-    background-color: #f2dede;
+    background-color: #fce4e4;
     border: 1px solid #ebccd1;
 }
 
-
-/* ====================================
-   NÚT HÀNH ĐỘNG VÀ CHUYỂN HƯỚNG
-   (Cần định nghĩa lại các nút vì chúng là phần tử cơ bản)
-   ==================================== */
-
+/* Nút hành động */
 .confirmation-actions {
     margin-top: 30px;
     display: flex;
@@ -179,38 +169,36 @@ body {
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Nút chính TRANG THẤT BẠI (Màu cam) */
+/* Nút chính trang thất bại */
 .primary-failed-btn {
     background-color: #f0ad4e;
 }
+
 .primary-failed-btn:hover {
     background-color: #ec971f;
 }
 
-/* Nút phụ (Dùng màu xám) */
+/* Nút phụ */
 .secondary-btn {
-    background-color: #718096;
+    background-color: #ff8c1a;
 }
+
 .secondary-btn:hover {
-    background-color: #4a5568;
+    background-color: #e65c00;
 }
 
-
-/* ====================================
-   TÓM TẮT ĐƠN HÀNG (SUMMARY DETAILS)
-   ==================================== */
-
+/* Tóm tắt đơn hàng */
 .summary-details .detail-row {
     display: flex;
     justify-content: space-between;
     padding: 12px 0;
-    border-bottom: 1px dashed #edf2f7;
+    border-bottom: 1px dashed #ffe5e5;
     font-size: 15px;
-    color: #4a5568;
+    color: #7a3a3a;
 }
 
 .summary-details strong {
-    color: #2d3748;
+    color: #4a1010;
     font-weight: 600;
 }
 
@@ -221,15 +209,13 @@ body {
     font-size: 16px;
 }
 
-/* Hàng giảm giá */
 .discount-row span {
-    color: #2e7d32;
+    color: #d40000;
     font-weight: 600;
 }
 
-/* Tổng thanh toán */
 .summary-row.total {
-    border-top: 2px solid #e2e8f0;
+    border-top: 2px solid #ffe5e5;
     padding-top: 15px;
     margin-top: 10px;
     font-size: 1.4em;
@@ -240,16 +226,12 @@ body {
     color: #d9534f;
 }
 
-
-/* ====================================
-   CHI TIẾT SẢN PHẨM (PRODUCT LIST)
-   ==================================== */
-
+/* Chi tiết sản phẩm */
 .product {
     display: flex;
     align-items: center;
     padding: 15px 0;
-    border-bottom: 1px solid #edf2f7;
+    border-bottom: 1px solid #ffe5e5;
 }
 
 .product:last-child {
@@ -262,7 +244,7 @@ body {
     object-fit: cover;
     border-radius: 4px;
     margin-right: 15px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #ff9999;
 }
 
 .product-right {
@@ -272,7 +254,7 @@ body {
 .product-title {
     margin: 0 0 5px 0;
     font-weight: 600;
-    color: #2d3748;
+    color: #4a1010;
     font-size: 16px;
 }
 
@@ -281,72 +263,68 @@ body {
     justify-content: space-between;
     align-items: center;
     font-size: 0.9em;
-    color: #718096;
+    color: #7a3a3a;
 }
 
 .product-bottom .price {
     font-size: 1.1em;
-    color: #2e7d32;
+    color: #d40000;
     font-weight: 700;
 }
 
- /* Footer */
-    .footer {
-    background: #2d3748;
+/* Footer */
+.footer {
+    background: #a10000;
     color: white;
     padding: 60px 0 30px;
-    }
+}
 
-    .footer-container {
+.footer-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    }
+}
 
-    .footer-grid {
+.footer-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 40px;
     margin-bottom: 40px;
-    }
+}
 
-    .footer-section h3 {
+.footer-section h3 {
     font-size: 20px;
     margin-bottom: 20px;
-    color: #a0aec0;
-    }
+    color: #ffd699;
+}
 
-    .footer-section ul {
+.footer-section ul {
     list-style: none;
-    }
+}
 
-    .footer-section ul li {
+.footer-section ul li {
     margin-bottom: 10px;
-    }
+}
 
-    .footer-section a {
-    color: #cbd5e0;
+.footer-section a {
+    color: #ffc299;
     text-decoration: none;
     transition: color 0.3s;
-    }
+}
 
-    .footer-section a:hover {
+.footer-section a:hover {
     color: white;
-    }
+}
 
-    .copyright {
+.copyright {
     text-align: center;
     padding-top: 30px;
-    border-top: 1px solid #4a5568;
-    color: #a0aec0;
+    border-top: 1px solid #ff9999;
+    color: #ffd699;
     font-size: 14px;
-    }
+}
 
-
-/* ====================================
-   RESPONSIVE
-   ==================================== */
-
+/* Responsive */
 @media (max-width: 600px) {
     .confirmation-container {
         margin: 30px auto;

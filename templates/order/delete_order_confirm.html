@@ -1,0 +1,63 @@
+{% load static humanize %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng #{{ order.id }}</title>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
+
+    <!-- CSS riêng -->
+    <link rel="stylesheet" href="{% static 'order/order_delete_confirm.css' %}">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+{% include "base/header.html" %}
+
+<main class="main-content">
+<div class="delete-confirm-container">
+    <div class="card confirm-card">
+        <h2 class="confirm-title">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Xác nhận hủy đơn hàng
+        </h2>
+
+        <div class="order-info">
+            <p><b>Mã đơn hàng:</b> #DH{{ order.id }}</p>
+            <p><b>Ngày đặt:</b> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+            <p><b>Tổng tiền:</b> {{ order.total_amount|floatformat:0|intcomma }}đ</p>
+        </div>
+
+        <div class="warning-message">
+            <p>Bạn có chắc chắn muốn hủy đơn hàng này?</p>
+            <p class="text-small">Hành động này không thể hoàn tác.</p>
+        </div>
+
+        <div class="action-buttons">
+            <form method="POST" action="{% url 'order:delete_order' order.id %}">
+                {% csrf_token %}
+                <button type="button"
+                        class="btn btn-cancel"
+                        onclick="window.history.back()">
+                    <i class="fa-solid fa-xmark"></i>
+                    Quay lại
+                </button>
+
+                <button type="submit" class="btn btn-confirm-delete">
+                    <i class="fa-solid fa-trash"></i>
+                    Xác nhận hủy
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</main>
+
+{% include "base/footer.html" %}
+</body>
+</html>

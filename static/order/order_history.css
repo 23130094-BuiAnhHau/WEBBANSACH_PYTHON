@@ -1,117 +1,135 @@
+* {
+    box-sizing: border-box;
+}
 
 body {
     font-family: Arial, sans-serif;
-    background: #f4f6f9;
+    background: #fff0f0;
     margin: 0;
     padding: 20px;
 }
 
-/* ===== CONTAINER CHÍNH ===== */
-.dashboard-container {
-    max-width: 1200px;
-    margin: auto;
-    display: grid;
-    grid-template-columns: fit-content(320px) 1fr;
-    gap: 25px;
-
-    align-items: start; /* ✅ Ép 2 bên ngang hàng trên */
+.main-content {
+    width: 100%;
 }
 
-/* ===== BÊN TRÁI: THÔNG TIN KHÁCH HÀNG ===== */
-.customer-info {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: flex-start;
+}
 
-    width: fit-content;
-    max-width: 320px;
-    height: fit-content;
-    margin-top: 0;
+.customer-info {
+    background: #ffe5e5;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(212, 0, 0, 0.15);
 }
 
 .customer-info h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin: 0 0 18px;
+    font-size: 20px;
+    color: #d40000;
 }
 
 .info-row {
     display: flex;
     justify-content: space-between;
-    gap: 15px;
+    align-items: flex-start;
+    gap: 12px;
     margin-bottom: 14px;
     font-size: 15px;
 }
 
 .info-row span {
-    color: #555;
+    color: #8b0000;
+    white-space: nowrap;
 }
 
 .info-row b {
+    color: #d40000;
     text-align: right;
-}
-
-/* ===== BÊN PHẢI: DANH SÁCH ĐƠN HÀNG ===== */
-.order-list {
-    margin-top: 0;
+    word-break: break-word;
 }
 
 .order-list h2 {
-    margin-top: 0;
-    margin-bottom: 16px;
+    margin: 0 0 16px;
+    font-size: 20px;
+    color: #d40000;
 }
 
-/* ===== TỪNG ĐƠN HÀNG ===== */
 .order-item {
-    background: #fff;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: #fff5f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 6px rgba(212, 0, 0, 0.12);
 }
 
 .order-top {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
+    align-items: center;
+    margin-bottom: 14px;
     font-size: 14px;
+    color: #8b0000;
 }
 
-/* ===== TRẠNG THÁI ===== */
 .status {
-    padding: 4px 12px;
+    padding: 4px 14px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
-.processing {
-    background: #e3f2fd;
-    color: #1565c0;
+.pending {
+    background: #ffe5e5;
+    color: #d40000;
 }
 
-.shipping {
-    background: #fff3cd;
-    color: #856404;
+.shipped {
+    background: #fff1dd;
+    color: #d47300;
 }
 
-.done {
-    background: #d4f8e8;
-    color: #0a7b4f;
+.completed {
+    background: #e6fffa;
+    color: #d40000;
 }
 
-/* ===== NỘI DUNG ĐƠN ===== */
+.cancelled {
+    background: #eee;
+    color: #555;
+}
+
+.cancelled {
+    background: #eee;
+    color: #555;
+}
+
 .order-body {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f2bcbc;
+}
+
+.order-body:last-child {
+    border-bottom: none;
 }
 
 .order-body img {
-    width: 70px;
-    height: 70px;
+    width: 72px;
+    height: 72px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 8px;
+    border: 1px solid #d40000;
+    flex-shrink: 0;
 }
 
 .order-detail {
@@ -119,10 +137,67 @@ body {
 }
 
 .order-detail p {
-    margin: 3px 0;
+    margin: 4px 0;
+    font-size: 14px;
+    color: #5a0000;
 }
 
 .order-price {
     font-weight: bold;
-    color: #e53935;
+    font-size: 15px;
+    color: #d40000;
+    white-space: nowrap;
+}
+
+.review-btn {
+    padding: 6px 14px;
+    background: #d40000;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.review-btn:hover {
+    background: #a10000;
+    transform: translateY(-1px);
+}
+
+.order-detail-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #d40000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.order-detail-link:hover {
+    text-decoration: underline;
+}
+
+.order-list p {
+    color: #8b0000;
+    font-size: 15px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+
+    .order-body {
+        flex-wrap: wrap;
+    }
+
+    .order-price {
+        width: 100%;
+        margin-top: 6px;
+    }
+
+    .review-btn {
+        margin-top: 6px;
+    }
 }

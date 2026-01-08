@@ -1,178 +1,124 @@
-{% load static %}
+{% load static humanize %} 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Giỏ hàng</title>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="{% static 'base/header.css' %}">
+    <link rel="stylesheet" href="{% static 'base/footer.css' %}">
+
+    <!-- CSS riêng -->
     <link rel="stylesheet" href="{% static 'cart/cart_detail.css' %}">
-    <link rel="stylesheet" href="{% static 'home/home.css' %}">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
 
-<header class="header">
+<!-- HEADER -->
+{% include "base/header.html" %}
 
-    <!-- TOP BAR -->
-    <div class="header-top">
-        <div class="header-container">
+<main class="main-content">
 
-            <!-- LOGO -->
-            <a href="{% url 'home:home' %}" class="logo">
-                <div class="logo-text">BookStore</div>
-            </a>
+    <main class="cart-page">
 
-            <!-- SEARCH -->
-            <form action="{% url 'book:book_list' %}" method="get" class="search-bar">
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Tìm sách, tác giả, thể loại..."
-                    value="{{ request.GET.search|default:'' }}"
-                >
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </form>
+        <h1>🛒 Giỏ hàng</h1>
 
-            <!-- ACTIONS -->
-            <div class="header-actions">
+        {% if cart.items.exists %}
+        <div class="cart-layout">
 
-                {% if user.is_authenticated %}
-                    <span class="hello-user">
-                        Xin chào, <b>{{ user.username }}</b>
-                    </span>
+            <!-- DANH SÁCH -->
+            <div class="cart-list">
 
-                    <!-- LOGOUT (POST) -->
-                    <form action="{% url 'user:logout' %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="login-btn logout-btn">
-                            Đăng xuất
-                        </button>
-                    </form>
+                <label class="check-all">
+                    <input type="checkbox" id="check-all" checked>
+                    Chọn tất cả
+                </label>
 
-                {% else %}
-                    <a href="{% url 'user:login' %}" class="login-btn">
-                        Đăng nhập
-                    </a>
-                {% endif %}
+                {% for item in cart.items.all %}
+                <div class="cart-item">
 
-            </div>
+                    <input type="checkbox"
+                            class="item-check"
+                            data-price="{{ item.total_price}}"
+                            checked>
 
-        </div>
-    </div>
+                    <div class="item-image">
+                        {% if item.book.images.first %}
+                            <img src="{{ item.book.images.first.image }}">
+                        {% else %}
+                            <img src="{% static 'images/no-book.png' %}">
+                        {% endif %}
+                    </div>
 
-    <!-- BOTTOM MENU -->
-    <div class="header-bottom">
-        <nav class="nav-links">
-            <a href="{% url 'home:home' %}">Trang chủ</a>
-            <a href="{% url 'book:book_list' %}">Sản phẩm</a>
-            <a href="{% url 'book:book_list' %}?sort=bestseller">Bán chạy</a>
-            <a href="{% url 'book:book_list' %}?sort=new">Mới nhất</a>
-        </nav>
-    </div>
+                    <div class="item-info">
+                        <h3>{{ item.book.title }}</h3>
+                        <p>Tác giả: {{ item.book.author.name }}</p>
+                        <p class="price">
+                            {{ item.book.get_final_price_formatted }} ₫
+                        </p>
+                    </div>
 
-</header>
+                    <div class="item-actions">
+                        <div class="qty">
+                            <form method="post" action="{% url 'cart:decrease_quantity' item.id %}">
+                                {% csrf_token %}
+                                <button>-</button>
+                            </form>
 
-<main class="cart-page">
+                            <span>{{ item.quantity }}</span>
 
-    <h1>🛒 Giỏ hàng</h1>
+                            <form method="post" action="{% url 'cart:add_to_cart' item.book.id %}">
+                                {% csrf_token %}
+                                <button>+</button>
+                            </form>
+                        </div>
 
-    {% if cart.items.exists %}
-    <div class="cart-layout">
-
-        <!-- DANH SÁCH -->
-        <div class="cart-list">
-
-            <label class="check-all">
-                <input type="checkbox" id="check-all" checked>
-                Chọn tất cả
-            </label>
-
-            {% for item in cart.items.all %}
-            <div class="cart-item">
-
-                <input type="checkbox"
-                       class="item-check"
-                       data-price="{{ item.get_total_price }}"
-                       checked>
-
-                <div class="item-image">
-                    {% if item.book.images.first %}
-                        <img src="{{ item.book.images.first.image.url }}">
-                    {% else %}
-                        <img src="{% static 'images/no-book.png' %}">
-                    {% endif %}
-                </div>
-
-                <div class="item-info">
-                    <h3>{{ item.book.title }}</h3>
-                    <p>Tác giả: {{ item.book.author.name }}</p>
-                    <p class="price">
-                        {{ item.book.get_final_price|floatformat:0 }} ₫
-                    </p>
-                </div>
-
-                <div class="item-actions">
-                    <div class="qty">
-                        <form method="post" action="{% url 'cart:decrease_quantity' item.id %}">
+                        <form method="post" action="{% url 'cart:remove_from_cart' item.id %}">
                             {% csrf_token %}
-                            <button>-</button>
-                        </form>
-
-                        <span>{{ item.quantity }}</span>
-
-                        <form method="post" action="{% url 'cart:add_to_cart' item.book.id %}">
-                            {% csrf_token %}
-                            <button>+</button>
+                            <button class="remove">Xóa</button>
                         </form>
                     </div>
 
-                    <div class="total">
-                        {{ item.get_total_price|floatformat:0 }} ₫
-                    </div>
+                </div>
+                {% endfor %}
+            </div>
 
-                    <form method="post" action="{% url 'cart:remove_from_cart' item.id %}">
-                        {% csrf_token %}
-                        <button class="remove">Xóa</button>
-                    </form>
+            <!-- TỔNG TIỀN -->
+            <div class="cart-summary">
+                <h2>Thanh toán</h2>
+
+                <div class="row">
+                    <span>Tổng tiền</span>
+                    <span id="selected-total">0 ₫</span>
                 </div>
 
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- TỔNG TIỀN -->
-        <div class="cart-summary">
-            <h2>Thanh toán</h2>
-
-            <div class="row">
-                <span>Tổng tiền</span>
-                <span id="selected-total">0 ₫</span>
+                <a href="{% url 'order:checkout' %}" class="checkout-btn">
+                    Tiến hành đặt hàng
+                </a>
             </div>
 
-            <a href="{% url 'order:checkout' %}" class="checkout-btn">
-                Tiến hành đặt hàng
-            </a>
         </div>
+        {% else %}
+            <p class="empty">Giỏ hàng trống 🛒</p>
+        {% endif %}
 
-    </div>
-    {% else %}
-        <p class="empty">Giỏ hàng trống</p>
-    {% endif %}
+    </main>
 
 </main>
 
+<!-- FOOTER -->
+{% include "base/footer.html" %}
+
+<!-- JS -->
 <script>
-function format(n){
-    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ' ₫';
-}
 function calc(){
     let total = 0;
     document.querySelectorAll('.item-check:checked').forEach(cb=>{
         total += parseInt(cb.dataset.price);
     });
-    document.getElementById('selected-total').innerText = format(total);
+    document.getElementById('selected-total').innerText =
+        total;
 }
 document.querySelectorAll('.item-check').forEach(cb=>{
     cb.addEventListener('change',calc);

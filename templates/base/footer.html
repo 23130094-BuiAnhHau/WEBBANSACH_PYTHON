@@ -1,0 +1,60 @@
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>BookStore</h3>
+                <p class="footer-text">
+                    Địa chỉ: <br>
+                    Điện thoại:
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Danh mục</h3>
+                <ul>
+                    {% for c in categories|slice:":4" %}
+                        <li>
+                            <a href="{% url 'book:book_list' %}?category={{ c.id }}">
+                                {{ c.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    <li>
+                        <a href="{% url 'book:recommend_user' %}">
+                            Gợi ý cho bạn
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'book:book_list' %}">
+                            Tất cả sách
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="footer-section">
+                <h3>Hỗ trợ</h3>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                    <li><a href="#">Chính sách vận chuyển</a></li>
+                    <li><a href="#">Chính sách hoàn trả</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Kết nối</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="copyright">© Website demo by Nhom8</p>
+    </div>
+</footer>
